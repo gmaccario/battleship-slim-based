@@ -35,7 +35,14 @@
                 		<p></p>
                 		
                     	<div id="app">
-                    		<game></game>
+                    		<div id="player1">
+                    			<board player=1></board>
+                    			<fleet player=1></fleet>
+                    		</div>
+                    		<div id="player2">
+                    			<board player=2></board>
+                    			<fleet player=2></fleet>
+                    		</div>
                     	</div>
                     </div>
                 </div>

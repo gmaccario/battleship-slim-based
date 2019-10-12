@@ -1,14 +1,10 @@
-/* *****************************************************************************************
- *  
- *  Main Game Object
- *  
- */
-const Game = Vue.component('game',{
+// Board Component
+const Board = Vue.component('board',{
 	components: {
 		
 	},
 	props: {
-		
+		player: String,
 	},
 	data(){
 		return {}
@@ -25,28 +21,67 @@ const Game = Vue.component('game',{
 	methods: {
 
 	},
-  	template:`<div>Vuejs Integration Board 1 and 2</div>`
+  	template:`<div>
+  		<p>Board {{ player }}</p>
+  		</div>`
 });
 
-/* *****************************************************************************************
- *  
- *  Main Vue Object
- *  
- */
+// Fleet Component
+const Fleet = Vue.component('fleet',{
+	components: {
+		
+	},
+	props: {
+		player: String,
+	},
+	data(){
+		return {}
+	},
+	created() {
+		
+	},
+	mounted() {
+
+	},
+	watch: {
+		
+	},
+	methods: {
+
+	},
+  	template:`<div>
+  		<p>Fleet {{ player }}</p>
+  		</div>`
+});
+
+
+// Main Vue Object
 const vm = new Vue({
     el: '#app',
     components: {
-        'game': Game
+        'board': Board,
+        'fleet': Fleet,
     },
     data(){
 		return {
-			
+			token: ''
 		}
 	},
     created(){
-    	//this.setAuthCookie();
+    	this.getToken();
 	},
     methods: {
+    	getToken()
+    	{
+    		axios.get('/api/token', {
+			    
+			}).then((response) => {
+
+				this.token = response.data.token;
+				
+				this.setAuthCookie();
+			});
+    	},
     	setAuthCookie(){
     		/**
              * @note Save a cookie and use it instead of the input value. 
