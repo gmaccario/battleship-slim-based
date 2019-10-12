@@ -63,14 +63,17 @@ const vm = new Vue({
         'fleet': Fleet,
     },
     data(){
+    	
 		return {
 			token: ''
 		}
 	},
     created(){
+		
     	this.getToken();
 	},
     methods: {
+    	
     	getToken()
     	{
     		axios.get('/api/token', {
@@ -82,12 +85,12 @@ const vm = new Vue({
 				this.setAuthCookie();
 			});
     	},
+    	
     	setAuthCookie(){
-    		/**
-             * @note Save a cookie and use it instead of the input value. 
-             * @todo Set expires=Mon, 03 Oct 2019 20:47:11 UTC; 
-             */    		
-       		document.cookie = `token=${this.token}; path=/`;
+
+    		// Max Age 5 days 432000 seconds
+  		  	document.cookie = `token=${this.token}; max-age=432000;path=/`;
+  		  	console.log(document.cookie);
     	}
 	}
 });
