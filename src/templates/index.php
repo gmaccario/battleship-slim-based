@@ -29,6 +29,7 @@
                 </div>
             </div>
             
+            <?php /*
             <div class="container-fluid game-over">
                 <div class="row">
                 	<div class="col">
@@ -86,13 +87,13 @@
                                 	</tr>
                                 </tbody>
                             </table>
-                    	</div> <?php /* End board 1 */  ?>
+                    	</div>
                     	
-                    	<?php /*<div id="player1-fleet">
+                    	<?php <div id="player1-fleet">
                         	<h4>Enemy's fleet</h4>
                             
                             <div class="fleet player1"></div>
-                        </div>*/ ?>
+                        </div> ?>
             		</div>
             		
             		<div class="col">
@@ -126,17 +127,17 @@
                                 	</tr>
                                 </tbody>
                             </table>
-                        </div> <?php /* End board 2*/  ?>
+                        </div>
                         
-                        <?php /*<div id="player2-fleet">
+                        <?php <div id="player2-fleet">
                         	<h4>Enemy's fleet</h4>
                             
                             <div class="fleet player2"></div>
-                        </div>*/ ?>
+                        </div>
             		</div>
             	</div>
             </div>
-            
+            */ ?>
 			<div class="container-fluid">
 				<div class="row">
                     <div class="col">

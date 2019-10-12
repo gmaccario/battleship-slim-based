@@ -91,6 +91,54 @@
         ]
     },
     {
+        "name": "firebase/php-jwt",
+        "version": "v5.0.0",
+        "version_normalized": "5.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/firebase/php-jwt.git",
+            "reference": "9984a4d3a32ae7673d6971ea00bae9d0a1abba0e"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/firebase/php-jwt/zipball/9984a4d3a32ae7673d6971ea00bae9d0a1abba0e",
+            "reference": "9984a4d3a32ae7673d6971ea00bae9d0a1abba0e",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": " 4.8.35"
+        },
+        "time": "2017-06-27T22:17:23+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Firebase\\JWT\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Neuman Vong",
+                "email": "neuman+pear@twilio.com",
+                "role": "Developer"
+            },
+            {
+                "name": "Anant Narayanan",
+                "email": "anant@php.net",
+                "role": "Developer"
+            }
+        ],
+        "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+        "homepage": "https://github.com/firebase/php-jwt"
+    },
+    {
         "name": "myclabs/deep-copy",
         "version": "1.9.3",
         "version_normalized": "1.9.3.0",
@@ -452,23 +500,23 @@
     },
     {
         "name": "phpspec/prophecy",
-        "version": "1.8.1",
-        "version_normalized": "1.8.1.0",
+        "version": "1.9.0",
+        "version_normalized": "1.9.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/phpspec/prophecy.git",
-            "reference": "1927e75f4ed19131ec9bcc3b002e07fb1173ee76"
+            "reference": "f6811d96d97bdf400077a0cc100ae56aa32b9203"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpspec/prophecy/zipball/1927e75f4ed19131ec9bcc3b002e07fb1173ee76",
-            "reference": "1927e75f4ed19131ec9bcc3b002e07fb1173ee76",
+            "url": "https://api.github.com/repos/phpspec/prophecy/zipball/f6811d96d97bdf400077a0cc100ae56aa32b9203",
+            "reference": "f6811d96d97bdf400077a0cc100ae56aa32b9203",
             "shasum": ""
         },
         "require": {
             "doctrine/instantiator": "^1.0.2",
             "php": "^5.3|^7.0",
-            "phpdocumentor/reflection-docblock": "^2.0|^3.0.2|^4.0",
+            "phpdocumentor/reflection-docblock": "^2.0|^3.0.2|^4.0|^5.0",
             "sebastian/comparator": "^1.1|^2.0|^3.0",
             "sebastian/recursion-context": "^1.0|^2.0|^3.0"
         },
@@ -476,7 +524,7 @@
             "phpspec/phpspec": "^2.5|^3.2",
             "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.5 || ^7.1"
         },
-        "time": "2019-06-13T12:50:23+00:00",
+        "time": "2019-10-03T11:07:50+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -922,12 +970,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/propelorm/Propel2.git",
-            "reference": "6c4996fc130c7555d82d9dca04396c6f3eeef306"
+            "reference": "693aef220f67df23f5bc82ef7c2f155fdc80e089"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/propelorm/Propel2/zipball/6c4996fc130c7555d82d9dca04396c6f3eeef306",
-            "reference": "6c4996fc130c7555d82d9dca04396c6f3eeef306",
+            "url": "https://api.github.com/repos/propelorm/Propel2/zipball/693aef220f67df23f5bc82ef7c2f155fdc80e089",
+            "reference": "693aef220f67df23f5bc82ef7c2f155fdc80e089",
             "shasum": ""
         },
         "require": {
@@ -947,7 +995,7 @@
         "suggest": {
             "monolog/monolog": "The recommended logging library to use with Propel."
         },
-        "time": "2018-02-19T13:36:42+00:00",
+        "time": "2019-10-07T12:43:00+00:00",
         "bin": [
             "bin/propel"
         ],
@@ -969,7 +1017,7 @@
         ],
         "authors": [
             {
-                "name": "William DURAND",
+                "name": "William Durand",
                 "email": "william.durand1@gmail.com"
             }
         ],
@@ -1850,17 +1898,17 @@
     },
     {
         "name": "symfony/config",
-        "version": "v4.3.4",
-        "version_normalized": "4.3.4.0",
+        "version": "v4.3.5",
+        "version_normalized": "4.3.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/config.git",
-            "reference": "07d49c0f823e0bc367c6d84e35b61419188a5ece"
+            "reference": "0acb26407a9e1a64a275142f0ae5e36436342720"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/config/zipball/07d49c0f823e0bc367c6d84e35b61419188a5ece",
-            "reference": "07d49c0f823e0bc367c6d84e35b61419188a5ece",
+            "url": "https://api.github.com/repos/symfony/config/zipball/0acb26407a9e1a64a275142f0ae5e36436342720",
+            "reference": "0acb26407a9e1a64a275142f0ae5e36436342720",
             "shasum": ""
         },
         "require": {
@@ -1881,7 +1929,7 @@
         "suggest": {
             "symfony/yaml": "To use the yaml reference dumper"
         },
-        "time": "2019-08-26T08:26:39+00:00",
+        "time": "2019-09-19T15:51:53+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1916,17 +1964,17 @@
     },
     {
         "name": "symfony/console",
-        "version": "v4.3.4",
-        "version_normalized": "4.3.4.0",
+        "version": "v4.3.5",
+        "version_normalized": "4.3.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/console.git",
-            "reference": "de63799239b3881b8a08f8481b22348f77ed7b36"
+            "reference": "929ddf360d401b958f611d44e726094ab46a7369"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/de63799239b3881b8a08f8481b22348f77ed7b36",
-            "reference": "de63799239b3881b8a08f8481b22348f77ed7b36",
+            "url": "https://api.github.com/repos/symfony/console/zipball/929ddf360d401b958f611d44e726094ab46a7369",
+            "reference": "929ddf360d401b958f611d44e726094ab46a7369",
             "shasum": ""
         },
         "require": {
@@ -1958,7 +2006,7 @@
             "symfony/lock": "",
             "symfony/process": ""
         },
-        "time": "2019-08-26T08:26:39+00:00",
+        "time": "2019-10-07T12:36:49+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1993,8 +2041,8 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v4.3.4",
-        "version_normalized": "4.3.4.0",
+        "version": "v4.3.5",
+        "version_normalized": "4.3.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/filesystem.git",
@@ -2045,23 +2093,23 @@
     },
     {
         "name": "symfony/finder",
-        "version": "v4.3.4",
-        "version_normalized": "4.3.4.0",
+        "version": "v4.3.5",
+        "version_normalized": "4.3.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/finder.git",
-            "reference": "86c1c929f0a4b24812e1eb109262fc3372c8e9f2"
+            "reference": "5e575faa95548d0586f6bedaeabec259714e44d1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/finder/zipball/86c1c929f0a4b24812e1eb109262fc3372c8e9f2",
-            "reference": "86c1c929f0a4b24812e1eb109262fc3372c8e9f2",
+            "url": "https://api.github.com/repos/symfony/finder/zipball/5e575faa95548d0586f6bedaeabec259714e44d1",
+            "reference": "5e575faa95548d0586f6bedaeabec259714e44d1",
             "shasum": ""
         },
         "require": {
             "php": "^7.1.3"
         },
-        "time": "2019-08-14T12:26:46+00:00",
+        "time": "2019-09-16T11:29:48+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2277,17 +2325,17 @@
     },
     {
         "name": "symfony/service-contracts",
-        "version": "v1.1.6",
-        "version_normalized": "1.1.6.0",
+        "version": "v1.1.7",
+        "version_normalized": "1.1.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/service-contracts.git",
-            "reference": "ea7263d6b6d5f798b56a45a5b8d686725f2719a3"
+            "reference": "ffcde9615dc5bb4825b9f6aed07716f1f57faae0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/service-contracts/zipball/ea7263d6b6d5f798b56a45a5b8d686725f2719a3",
-            "reference": "ea7263d6b6d5f798b56a45a5b8d686725f2719a3",
+            "url": "https://api.github.com/repos/symfony/service-contracts/zipball/ffcde9615dc5bb4825b9f6aed07716f1f57faae0",
+            "reference": "ffcde9615dc5bb4825b9f6aed07716f1f57faae0",
             "shasum": ""
         },
         "require": {
@@ -2297,7 +2345,7 @@
         "suggest": {
             "symfony/service-implementation": ""
         },
-        "time": "2019-08-20T14:44:19+00:00",
+        "time": "2019-09-17T11:12:18+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2337,17 +2385,17 @@
     },
     {
         "name": "symfony/translation-contracts",
-        "version": "v1.1.6",
-        "version_normalized": "1.1.6.0",
+        "version": "v1.1.7",
+        "version_normalized": "1.1.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/translation-contracts.git",
-            "reference": "325b17c24f3ee23cbecfa63ba809c6d89b5fa04a"
+            "reference": "364518c132c95642e530d9b2d217acbc2ccac3e6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/325b17c24f3ee23cbecfa63ba809c6d89b5fa04a",
-            "reference": "325b17c24f3ee23cbecfa63ba809c6d89b5fa04a",
+            "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/364518c132c95642e530d9b2d217acbc2ccac3e6",
+            "reference": "364518c132c95642e530d9b2d217acbc2ccac3e6",
             "shasum": ""
         },
         "require": {
@@ -2356,7 +2404,7 @@
         "suggest": {
             "symfony/translation-implementation": ""
         },
-        "time": "2019-08-02T12:15:04+00:00",
+        "time": "2019-09-17T11:12:18+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2396,17 +2444,17 @@
     },
     {
         "name": "symfony/validator",
-        "version": "v4.3.4",
-        "version_normalized": "4.3.4.0",
+        "version": "v4.3.5",
+        "version_normalized": "4.3.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/validator.git",
-            "reference": "173b483999c2acad8e040633105733318dcc8a83"
+            "reference": "dd344bae7894ce8d6c399d854d894eb6e52ee178"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/validator/zipball/173b483999c2acad8e040633105733318dcc8a83",
-            "reference": "173b483999c2acad8e040633105733318dcc8a83",
+            "url": "https://api.github.com/repos/symfony/validator/zipball/dd344bae7894ce8d6c399d854d894eb6e52ee178",
+            "reference": "dd344bae7894ce8d6c399d854d894eb6e52ee178",
             "shasum": ""
         },
         "require": {
@@ -2456,7 +2504,7 @@
             "symfony/translation": "For translating validation errors.",
             "symfony/yaml": ""
         },
-        "time": "2019-08-26T09:28:48+00:00",
+        "time": "2019-10-07T12:36:49+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2491,17 +2539,17 @@
     },
     {
         "name": "symfony/yaml",
-        "version": "v4.3.4",
-        "version_normalized": "4.3.4.0",
+        "version": "v4.3.5",
+        "version_normalized": "4.3.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/yaml.git",
-            "reference": "5a0b7c32dc3ec56fd4abae8a4a71b0cf05013686"
+            "reference": "41e16350a2a1c7383c4735aa2f9fce74cf3d1178"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/yaml/zipball/5a0b7c32dc3ec56fd4abae8a4a71b0cf05013686",
-            "reference": "5a0b7c32dc3ec56fd4abae8a4a71b0cf05013686",
+            "url": "https://api.github.com/repos/symfony/yaml/zipball/41e16350a2a1c7383c4735aa2f9fce74cf3d1178",
+            "reference": "41e16350a2a1c7383c4735aa2f9fce74cf3d1178",
             "shasum": ""
         },
         "require": {
@@ -2517,7 +2565,7 @@
         "suggest": {
             "symfony/console": "For validating YAML files using the lint command"
         },
-        "time": "2019-08-20T14:27:59+00:00",
+        "time": "2019-09-11T15:41:19+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {

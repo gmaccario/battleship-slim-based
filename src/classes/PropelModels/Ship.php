@@ -16,32 +16,7 @@ use PropelModels\Base\Ship as BaseShip;
  */
 class Ship extends BaseShip
 {
-    /**
-     * Protected because Ship extensions
-     */
-    protected $type = '';
-    protected $length = 0;
-    protected $startX = 0; // start point on rows
-    protected $startY = 0; // start point on cols
-    protected $direction = 'horizontal';
-    protected $coordinates = array();
-    
-    /**
-     * @name __construct
-     *
-     * @author G.Maccario <g_maccario@hotmail.com>
-     * @return
-     */
-    public function __construct(int $startX = 0, int $startY = 0, string $direction = '')
-    {
-        $this->startX = $startX;
-        $this->startY = $startY;
-        $this->direction = $direction;
-        $this->setCoordinates($startX, $startY);
-        
-        $this->length = 0;
-        $this->type = 'Unknown';
-    }
+    protected $coordinates = array(); //[{(x,y),(x,y),(x,y),...]
     
     /**
      * @name getCoordinates
@@ -49,7 +24,7 @@ class Ship extends BaseShip
      * @author G.Maccario <g_maccario@hotmail.com>
      * @return
      */
-    public function getCoordinates()
+    public function getCoordinates() : array
     {
         return $this->coordinates;
     }
@@ -66,6 +41,17 @@ class Ship extends BaseShip
     }
     
     /**
+     * @name resetCoordinates
+     *
+     * @author G.Maccario <g_maccario@hotmail.com>
+     * @return
+     */
+    public function resetCoordinates()
+    {
+        $this->coordinates = array();
+    }
+    
+    /**
      * @name setCoordinates
      *
      * @note Double check on these paramters
@@ -77,20 +63,18 @@ class Ship extends BaseShip
     {
         $this->startX = $startX;
         $this->startY = $startY;
-        
-        $this->coordinates = array();
-        
+
         if($this->direction == 'horizontal')
         {
-            for($i=$this->startY; $i < ($this->startY + $this->length); $i++)
-            {
-                array_push($this->coordinates, array($this->startX, $i));
-            }
-        }
-        else {
             for($i=$this->startX; $i < ($this->startX + $this->length); $i++)
             {
                 array_push($this->coordinates, array($i, $this->startY));
+            }
+        }
+        else {
+            for($i=$this->startY; $i < ($this->startY + $this->length); $i++)
+            {
+                array_push($this->coordinates, array($this->startX, $i));
             }
         }
     }

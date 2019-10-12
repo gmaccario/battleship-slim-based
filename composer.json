@@ -4,8 +4,8 @@
 			"./conf/config.php"
 		],
 		"psr-4" : {
+			"Controllers\\" : "src/classes/Controllers/",
 			"GameEntities\\" : "src/classes/GameEntities/",
-			"Services\\" : "src/classes/Services/",
 			"PropelModels\\" : "src/classes/PropelModels/"
 		}
 	},
@@ -15,6 +15,7 @@
 	"require" : {
 		"propel/propel" : "~2.0@dev",
 		"slim/slim" : "^3.12",
-		"slim/php-view": "^2.2"
+		"slim/php-view": "^2.2",
+		"firebase/php-jwt": "^5.0"
 	}
 }

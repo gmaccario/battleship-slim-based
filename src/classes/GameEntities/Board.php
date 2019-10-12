@@ -120,24 +120,18 @@ if(!class_exists('Board'))
 
                             $this->placeShip($ship);
                             
-                            /** 
-                             * Check the ship length
-                             */
+                            // Check the ship length
                             if($directions[$idRandDirection] == 'horizontal')
                             {
                                 for($i=$randY; $i < ($randY + $ship->getLength()); $i++)
                                 {
                                     $this->board[$randX][$i] = 1;
-                                    
-                                    //$ship->addCoordinates($randX, $i);
                                 }
                             }
                             else {
                                 for($i=$randX; $i < ($randX + $ship->getLength()); $i++)
                                 {
                                     $this->board[$i][$randY] = 1;
-                                    
-                                    //$ship->addCoordinates($i, $randY);
                                 }
                             }
                             

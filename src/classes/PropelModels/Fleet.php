@@ -3,7 +3,6 @@
 namespace PropelModels;
 
 use PropelModels\Base\Fleet as BaseFleet;
-
 use GameEntities\Battleship;
 use GameEntities\AircraftCarrier;
 use GameEntities\Destroyer;

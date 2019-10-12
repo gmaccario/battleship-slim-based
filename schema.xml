@@ -7,14 +7,10 @@
     <foreign-key foreignTable="game" name="fleet_ibfk_1" onDelete="CASCADE" onUpdate="CASCADE">
       <reference local="id_game" foreign="id"/>
     </foreign-key>
-    <index name="id_game">
-      <index-column name="id_game"/>
-    </index>
     <unique name="id">
       <unique-column name="id"/>
     </unique>
     <unique name="unique_index_fleets">
-      <unique-column name="id"/>
       <unique-column name="id_game"/>
       <unique-column name="side"/>
     </unique>

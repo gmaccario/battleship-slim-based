@@ -3,7 +3,10 @@
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP TABLE IF EXISTS `ship`;
+DROP TABLE IF EXISTS `fleet`;
 DROP TABLE IF EXISTS `game`;
+
 CREATE TABLE `game`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
@@ -13,7 +16,6 @@ CREATE TABLE `game`
     UNIQUE INDEX `unique_index_games` (`id`, `token`)
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
 
-DROP TABLE IF EXISTS `fleet`;
 CREATE TABLE `fleet`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
@@ -21,13 +23,12 @@ CREATE TABLE `fleet`
     `side` VARCHAR(250) DEFAULT '' NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id` (`id`),
-    UNIQUE INDEX `unique_index_fleets` (`id`, `id_game`, `side`),
+    UNIQUE INDEX `unique_index_fleets` (`id_game`, `side`),
 	CONSTRAINT FOREIGN KEY (id_game) REFERENCES game (id) 
 		ON DELETE CASCADE 
 		ON UPDATE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8 COLLATE = utf8_unicode_ci;
 
-DROP TABLE IF EXISTS `ship`;
 CREATE TABLE `ship`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,

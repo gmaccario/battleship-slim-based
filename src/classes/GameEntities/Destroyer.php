@@ -30,9 +30,9 @@ if(!class_exists('Destroyer'))
          * @author G.Maccario <g_maccario@hotmail.com>
          * @return
          */
-        public function __construct(int $startX = 0, int $startY = 0, string $direction = '')
+        public function __construct()
         {
-            parent::__construct($startX, $startY, $direction);
+            parent::__construct();
             
             $this->length = 2;
             

@@ -39,7 +39,6 @@ class ComposerStaticInit41da0cf65fefd6e3dcd7d06a5b1459a0
             'Symfony\\Component\\Config\\' => 25,
             'Slim\\Views\\' => 11,
             'Slim\\' => 5,
-            'Services\\' => 9,
         ),
         'P' => 
         array (
@@ -59,12 +58,17 @@ class ComposerStaticInit41da0cf65fefd6e3dcd7d06a5b1459a0
         ),
         'F' => 
         array (
+            'Firebase\\JWT\\' => 13,
             'FastRoute\\' => 10,
         ),
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
             'DeepCopy\\' => 9,
+        ),
+        'C' => 
+        array (
+            'Controllers\\' => 12,
         ),
     );
 
@@ -131,10 +135,6 @@ class ComposerStaticInit41da0cf65fefd6e3dcd7d06a5b1459a0
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
         ),
-        'Services\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src/classes/Services',
-        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -163,6 +163,10 @@ class ComposerStaticInit41da0cf65fefd6e3dcd7d06a5b1459a0
         array (
             0 => __DIR__ . '/../..' . '/src/classes/GameEntities',
         ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
         'FastRoute\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
@@ -174,6 +178,10 @@ class ComposerStaticInit41da0cf65fefd6e3dcd7d06a5b1459a0
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'Controllers\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/classes/Controllers',
         ),
     );
 
