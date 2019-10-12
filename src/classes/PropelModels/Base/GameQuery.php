@@ -22,9 +22,11 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildGameQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildGameQuery orderByToken($order = Criteria::ASC) Order by the token column
+ * @method     ChildGameQuery orderByDifficulty($order = Criteria::ASC) Order by the difficulty column
  *
  * @method     ChildGameQuery groupById() Group by the id column
  * @method     ChildGameQuery groupByToken() Group by the token column
+ * @method     ChildGameQuery groupByDifficulty() Group by the difficulty column
  *
  * @method     ChildGameQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildGameQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -60,17 +62,20 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildGame findOneOrCreate(ConnectionInterface $con = null) Return the first ChildGame matching the query, or a new ChildGame object populated from the query conditions when no match is found
  *
  * @method     ChildGame findOneById(int $id) Return the first ChildGame filtered by the id column
- * @method     ChildGame findOneByToken(string $token) Return the first ChildGame filtered by the token column *
+ * @method     ChildGame findOneByToken(string $token) Return the first ChildGame filtered by the token column
+ * @method     ChildGame findOneByDifficulty(string $difficulty) Return the first ChildGame filtered by the difficulty column *
 
  * @method     ChildGame requirePk($key, ConnectionInterface $con = null) Return the ChildGame by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildGame requireOne(ConnectionInterface $con = null) Return the first ChildGame matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildGame requireOneById(int $id) Return the first ChildGame filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildGame requireOneByToken(string $token) Return the first ChildGame filtered by the token column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildGame requireOneByDifficulty(string $difficulty) Return the first ChildGame filtered by the difficulty column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildGame[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildGame objects based on current ModelCriteria
  * @method     ChildGame[]|ObjectCollection findById(int $id) Return ChildGame objects filtered by the id column
  * @method     ChildGame[]|ObjectCollection findByToken(string $token) Return ChildGame objects filtered by the token column
+ * @method     ChildGame[]|ObjectCollection findByDifficulty(string $difficulty) Return ChildGame objects filtered by the difficulty column
  * @method     ChildGame[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -169,7 +174,7 @@ abstract class GameQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, token FROM game WHERE id = :p0';
+        $sql = 'SELECT id, token, difficulty FROM game WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -323,6 +328,31 @@ abstract class GameQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(GameTableMap::COL_TOKEN, $token, $comparison);
+    }
+
+    /**
+     * Filter the query on the difficulty column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDifficulty('fooValue');   // WHERE difficulty = 'fooValue'
+     * $query->filterByDifficulty('%fooValue%', Criteria::LIKE); // WHERE difficulty LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $difficulty The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildGameQuery The current query, for fluid interface
+     */
+    public function filterByDifficulty($difficulty = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($difficulty)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(GameTableMap::COL_DIFFICULTY, $difficulty, $comparison);
     }
 
     /**

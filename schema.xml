@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<database name="battleship" defaultIdMethod="native" defaultPhpNamingMethod="underscore" >
-  <table name="fleet" idMethod="native" phpName="Fleet" namespace="PropelModels">
+<database name="battleship" defaultIdMethod="native" defaultPhpNamingMethod="underscore" namespace="PropelModels">
+  <table name="fleet" idMethod="native" phpName="Fleet">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="id_game" phpName="IdGame" type="INTEGER" required="true"/>
     <column name="side" phpName="Side" type="VARCHAR" size="250" required="true" defaultValue=""/>
@@ -18,9 +18,10 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="game" idMethod="native" phpName="Game" namespace="PropelModels">
+  <table name="game" idMethod="native" phpName="Game">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="token" phpName="Token" type="VARCHAR" size="250" required="true" defaultValue=""/>
+    <column name="difficulty" phpName="Difficulty" type="VARCHAR" size="250" required="true" defaultValue=""/>
     <unique name="id">
       <unique-column name="id"/>
     </unique>
@@ -32,7 +33,7 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="history" idMethod="native" phpName="History" namespace="PropelModels">
+  <table name="history" idMethod="native" phpName="History">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="id_game" phpName="IdGame" type="INTEGER" required="true"/>
     <column name="player" phpName="Player" type="VARCHAR" size="250" required="true" defaultValue=""/>
@@ -54,7 +55,7 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="ship" idMethod="native" phpName="Ship" namespace="PropelModels">
+  <table name="ship" idMethod="native" phpName="Ship">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="id_fleet" phpName="IdFleet" type="INTEGER" required="true"/>
     <column name="type" phpName="Type" type="VARCHAR" size="250" required="true" defaultValue=""/>
