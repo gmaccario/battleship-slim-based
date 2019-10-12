@@ -16,10 +16,11 @@ We're going to play Battleship!
 
 - Get a new token
 
-3. /api/new-game
+3. /api/new-game[/difficulty/{difficulty}]
 
 - Prepare a new game
 - Authentication Header token
+- difficulty [optional]
 
 4. /api/get-fleet/{player}
 
