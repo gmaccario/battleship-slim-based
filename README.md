@@ -5,16 +5,33 @@ We're going to play Battleship!
 - Download/Clone the package from Github
 - Setup your database connection conf/config.php
 - Create a Virtual Host on your Apache
-- Run composer install (on your local machine) to install the required packages
 - Play the game via browser and have fun!
 
 ## Endpoints
-/hit-coordinates/8/0/player2?token=cd0cf1a576a90a08f449de09e566d1890f5e55c2330f82d872fe07dd0778d4ad
-- Parameters
-* X (mandatory): Row coordinate
-* Y (mandatory): Row coordinate
-* Player1 or Player (mandatory): If Player 1 search inside Player 1 Fleet
-* Token (mandatory): Authentication token
+1. /
+
+- Visit the Homepage
+
+2. /api/token
+
+- Get a new token
+
+3. /api/new-game
+
+- Prepare a new game
+- Authentication Header token
+
+4. /api/get-fleet/{player}
+
+- Get a list of ships per player (with ids)
+- Authentication Header token
+
+5. /api/hit-coordinates/{player}/{x}/{y}
+
+- Player (mandatory): Player1 search inside Player 1 Fleet
+- X (mandatory): Row coordinate
+- Y (mandatory): Col coordinate
+- Authentication Header token
 
 ## Test
 ./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/BoardTest.php
