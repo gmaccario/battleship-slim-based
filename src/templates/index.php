@@ -32,6 +32,19 @@
             <div class="container-fluid">
                 <div class="row">
                 	<div class="col">
+                		<p>Choose your level</p>
+                		<button type="button" class="btn btn-primary">Be Gentle!</button>
+                        <button type="button" class="btn btn-secondary">I'm too young to die</button>
+                        <button type="button" class="btn btn-warning">Warning Zone</button>
+                        <button type="button" class="btn btn-danger">Danger Zone</button>
+                        <button type="button" class="btn btn-dark">Ultra Nightmare</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="container-fluid">
+                <div class="row">
+                	<div class="col">
                 		<p></p>
                 		
                     	<div id="app">
