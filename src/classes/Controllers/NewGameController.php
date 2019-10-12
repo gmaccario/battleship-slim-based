@@ -29,6 +29,9 @@ if(!class_exists('NewGameController'))
      */
     class NewGameController
     {
+        // Players
+        private $players = array('player1', 'player2');
+        
         /**
          // @name __invoke
          *
@@ -49,10 +52,7 @@ if(!class_exists('NewGameController'))
             $game->setDifficulty($difficulty);
             $game->save();
             
-            // Players
-            $players = array('player1', 'player2');
-            
-            foreach($players as $player)
+            foreach($this->players as $player)
             {
                 // Board
                 $board = new Board();
