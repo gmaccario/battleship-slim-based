@@ -1,8 +1,7 @@
 <?php
 /**
 // NewGameController
- *
- *
+
 // @package Battleship
 // @author Giuseppe Maccario <g_maccario@hotmail.com>
 // @version 1.0
@@ -22,28 +21,32 @@ use PropelModels\Ship;
 if(!class_exists('NewGameController'))
 {
     /**
-    // @name NewGameController
-    // @description 
+     // @name NewGameController
+     // @description
      *
-    // @author G.Maccario <g_maccario@hotmail.com>
-    // @return
+     // @author G.Maccario <g_maccario@hotmail.com>
+     // @return
      */
     class NewGameController
-    {        
+    {
         /**
-        // @name __invoke
+         // @name __invoke
          *
-        // @author G.Maccario <g_maccario@hotmail.com>
-        // @return
+         // @author G.Maccario <g_maccario@hotmail.com>
+         // @return
          */
         public function __invoke(Request $request, Response $response, array $args)
         {
+            // Get GET parameters
+            $difficulty = filter_var($args['difficulty'], FILTER_SANITIZE_STRING);
+            
             // Get token from header
             $token = $request->getHeaderLine('Authorization');
-
+            
             // New Game
             $game = new Game();
             $game->setToken($token);
+            $game->setDifficulty($difficulty);
             $game->save();
             
             // Players
