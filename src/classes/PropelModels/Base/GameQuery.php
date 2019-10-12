@@ -44,7 +44,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildGameQuery rightJoinWithFleet() Adds a RIGHT JOIN clause and with to the query using the Fleet relation
  * @method     ChildGameQuery innerJoinWithFleet() Adds a INNER JOIN clause and with to the query using the Fleet relation
  *
- * @method     \PropelModels\FleetQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildGameQuery leftJoinHistory($relationAlias = null) Adds a LEFT JOIN clause to the query using the History relation
+ * @method     ChildGameQuery rightJoinHistory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the History relation
+ * @method     ChildGameQuery innerJoinHistory($relationAlias = null) Adds a INNER JOIN clause to the query using the History relation
+ *
+ * @method     ChildGameQuery joinWithHistory($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the History relation
+ *
+ * @method     ChildGameQuery leftJoinWithHistory() Adds a LEFT JOIN clause and with to the query using the History relation
+ * @method     ChildGameQuery rightJoinWithHistory() Adds a RIGHT JOIN clause and with to the query using the History relation
+ * @method     ChildGameQuery innerJoinWithHistory() Adds a INNER JOIN clause and with to the query using the History relation
+ *
+ * @method     \PropelModels\FleetQuery|\PropelModels\HistoryQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildGame findOne(ConnectionInterface $con = null) Return the first ChildGame matching the query
  * @method     ChildGame findOneOrCreate(ConnectionInterface $con = null) Return the first ChildGame matching the query, or a new ChildGame object populated from the query conditions when no match is found
@@ -386,6 +396,79 @@ abstract class GameQuery extends ModelCriteria
         return $this
             ->joinFleet($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Fleet', '\PropelModels\FleetQuery');
+    }
+
+    /**
+     * Filter the query by a related \PropelModels\History object
+     *
+     * @param \PropelModels\History|ObjectCollection $history the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildGameQuery The current query, for fluid interface
+     */
+    public function filterByHistory($history, $comparison = null)
+    {
+        if ($history instanceof \PropelModels\History) {
+            return $this
+                ->addUsingAlias(GameTableMap::COL_ID, $history->getIdGame(), $comparison);
+        } elseif ($history instanceof ObjectCollection) {
+            return $this
+                ->useHistoryQuery()
+                ->filterByPrimaryKeys($history->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByHistory() only accepts arguments of type \PropelModels\History or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the History relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildGameQuery The current query, for fluid interface
+     */
+    public function joinHistory($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('History');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'History');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the History relation History object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \PropelModels\HistoryQuery A secondary query class using the current class as primary query
+     */
+    public function useHistoryQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinHistory($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'History', '\PropelModels\HistoryQuery');
     }
 
     /**

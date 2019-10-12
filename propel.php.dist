@@ -11,7 +11,7 @@ return [
     'propel' => [
         'paths' => [
             // The directory where Propel expects to find your `schema.xml` file.
-            'schemaDir' => '/var/www/html/windowsketch',
+            'schemaDir' => '/var/www/html/battleship',
 
             // The directory where Propel should output generated object model classes.
             'phpDir' => '/Model/',
