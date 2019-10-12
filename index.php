@@ -22,7 +22,7 @@ require __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autolo
 
 // Debug only
 $config = ['settings' => ['displayErrorDetails' => true]];
- 
+
 // New Slim App
 $app = new \Slim\App($config);
 
@@ -30,10 +30,10 @@ $app = new \Slim\App($config);
 $container = $app->getContainer();
 $container['renderer'] = new PhpRenderer("./src/templates");
 
-// GET 
+// GET
 $app->get('/', HomeController::class)->setName('homepage'); // Homepage
 $app->get('/api/token', TokenController::class)->setName('getToken'); // Get new Token
-$app->get('/api/new-game', NewGameController::class)->setName('setupNewGame'); // Setup new Game
+$app->get('/api/new-game[/difficulty/{difficulty}]', NewGameController::class)->setName('setupNewGame'); // Setup new Game
 $app->get('/api/get-fleet/{player}', GetFleetController::class)->setName('getFleetXPlayer'); // Get a list of ships per player
 $app->get('/api/hit-coordinates/{player}/{x}/{y}', HitCoordinatesController::class)->setName('hitCoords'); // Hit coordinates
 
