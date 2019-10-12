@@ -16,6 +16,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 use PropelModels\GameQuery;
 use PropelModels\FleetQuery;
+use PropelModels\History;
 
 if(!class_exists('HitCoordinatesController'))
 {
@@ -54,7 +55,13 @@ if(!class_exists('HitCoordinatesController'))
             }
             else {
                 
-                // @todo save on history
+                // Save on history
+                $history = new History();
+                $history->setIdGame($gameQuery->getId());
+                $history->setPlayer($player);
+                $history->setX($x);
+                $history->setY($y);
+                $history->save();
                 
                 // Check if there is a ship at those coordinates, in the player board
                 $hit = false;

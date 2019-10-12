@@ -4,21 +4,15 @@ namespace PropelModels\Base;
 
 use \Exception;
 use \PDO;
-use PropelModels\Fleet as ChildFleet;
-use PropelModels\FleetQuery as ChildFleetQuery;
 use PropelModels\Game as ChildGame;
 use PropelModels\GameQuery as ChildGameQuery;
-use PropelModels\History as ChildHistory;
 use PropelModels\HistoryQuery as ChildHistoryQuery;
-use PropelModels\Map\FleetTableMap;
-use PropelModels\Map\GameTableMap;
 use PropelModels\Map\HistoryTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -27,18 +21,18 @@ use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 
 /**
- * Base class that represents a row from the 'game' table.
+ * Base class that represents a row from the 'history' table.
  *
  *
  *
  * @package    propel.generator.PropelModels.Base
  */
-abstract class Game implements ActiveRecordInterface
+abstract class History implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\PropelModels\\Map\\GameTableMap';
+    const TABLE_MAP = '\\PropelModels\\Map\\HistoryTableMap';
 
 
     /**
@@ -75,24 +69,38 @@ abstract class Game implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the token field.
+     * The value for the id_game field.
+     *
+     * @var        int
+     */
+    protected $id_game;
+
+    /**
+     * The value for the player field.
      *
      * Note: this column has a database default value of: ''
      * @var        string
      */
-    protected $token;
+    protected $player;
 
     /**
-     * @var        ObjectCollection|ChildFleet[] Collection to store aggregation of ChildFleet objects.
+     * The value for the x field.
+     *
+     * @var        int
      */
-    protected $collFleets;
-    protected $collFleetsPartial;
+    protected $x;
 
     /**
-     * @var        ObjectCollection|ChildHistory[] Collection to store aggregation of ChildHistory objects.
+     * The value for the y field.
+     *
+     * @var        int
      */
-    protected $collHistories;
-    protected $collHistoriesPartial;
+    protected $y;
+
+    /**
+     * @var        ChildGame
+     */
+    protected $aGame;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -103,18 +111,6 @@ abstract class Game implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildFleet[]
-     */
-    protected $fleetsScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildHistory[]
-     */
-    protected $historiesScheduledForDeletion = null;
-
-    /**
      * Applies default values to this object.
      * This method should be called from the object's constructor (or
      * equivalent initialization method).
@@ -122,11 +118,11 @@ abstract class Game implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->token = '';
+        $this->player = '';
     }
 
     /**
-     * Initializes internal state of PropelModels\Base\Game object.
+     * Initializes internal state of PropelModels\Base\History object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -223,9 +219,9 @@ abstract class Game implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Game</code> instance.  If
-     * <code>obj</code> is an instance of <code>Game</code>, delegates to
-     * <code>equals(Game)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>History</code> instance.  If
+     * <code>obj</code> is an instance of <code>History</code>, delegates to
+     * <code>equals(History)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -291,7 +287,7 @@ abstract class Game implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Game The current object, for fluid interface
+     * @return $this|History The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -363,20 +359,50 @@ abstract class Game implements ActiveRecordInterface
     }
 
     /**
-     * Get the [token] column value.
+     * Get the [id_game] column value.
+     *
+     * @return int
+     */
+    public function getIdGame()
+    {
+        return $this->id_game;
+    }
+
+    /**
+     * Get the [player] column value.
      *
      * @return string
      */
-    public function getToken()
+    public function getPlayer()
     {
-        return $this->token;
+        return $this->player;
+    }
+
+    /**
+     * Get the [x] column value.
+     *
+     * @return int
+     */
+    public function getX()
+    {
+        return $this->x;
+    }
+
+    /**
+     * Get the [y] column value.
+     *
+     * @return int
+     */
+    public function getY()
+    {
+        return $this->y;
     }
 
     /**
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\PropelModels\Game The current object (for fluent API support)
+     * @return $this|\PropelModels\History The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -386,31 +412,95 @@ abstract class Game implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[GameTableMap::COL_ID] = true;
+            $this->modifiedColumns[HistoryTableMap::COL_ID] = true;
         }
 
         return $this;
     } // setId()
 
     /**
-     * Set the value of [token] column.
+     * Set the value of [id_game] column.
+     *
+     * @param int $v new value
+     * @return $this|\PropelModels\History The current object (for fluent API support)
+     */
+    public function setIdGame($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->id_game !== $v) {
+            $this->id_game = $v;
+            $this->modifiedColumns[HistoryTableMap::COL_ID_GAME] = true;
+        }
+
+        if ($this->aGame !== null && $this->aGame->getId() !== $v) {
+            $this->aGame = null;
+        }
+
+        return $this;
+    } // setIdGame()
+
+    /**
+     * Set the value of [player] column.
      *
      * @param string $v new value
-     * @return $this|\PropelModels\Game The current object (for fluent API support)
+     * @return $this|\PropelModels\History The current object (for fluent API support)
      */
-    public function setToken($v)
+    public function setPlayer($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->token !== $v) {
-            $this->token = $v;
-            $this->modifiedColumns[GameTableMap::COL_TOKEN] = true;
+        if ($this->player !== $v) {
+            $this->player = $v;
+            $this->modifiedColumns[HistoryTableMap::COL_PLAYER] = true;
         }
 
         return $this;
-    } // setToken()
+    } // setPlayer()
+
+    /**
+     * Set the value of [x] column.
+     *
+     * @param int $v new value
+     * @return $this|\PropelModels\History The current object (for fluent API support)
+     */
+    public function setX($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->x !== $v) {
+            $this->x = $v;
+            $this->modifiedColumns[HistoryTableMap::COL_X] = true;
+        }
+
+        return $this;
+    } // setX()
+
+    /**
+     * Set the value of [y] column.
+     *
+     * @param int $v new value
+     * @return $this|\PropelModels\History The current object (for fluent API support)
+     */
+    public function setY($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->y !== $v) {
+            $this->y = $v;
+            $this->modifiedColumns[HistoryTableMap::COL_Y] = true;
+        }
+
+        return $this;
+    } // setY()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -422,7 +512,7 @@ abstract class Game implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->token !== '') {
+            if ($this->player !== '') {
                 return false;
             }
 
@@ -452,11 +542,20 @@ abstract class Game implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : GameTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : HistoryTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : GameTableMap::translateFieldName('Token', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->token = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : HistoryTableMap::translateFieldName('IdGame', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->id_game = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : HistoryTableMap::translateFieldName('Player', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->player = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : HistoryTableMap::translateFieldName('X', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->x = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : HistoryTableMap::translateFieldName('Y', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->y = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -465,10 +564,10 @@ abstract class Game implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = GameTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = HistoryTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\PropelModels\\Game'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\PropelModels\\History'), 0, $e);
         }
     }
 
@@ -487,6 +586,9 @@ abstract class Game implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aGame !== null && $this->id_game !== $this->aGame->getId()) {
+            $this->aGame = null;
+        }
     } // ensureConsistency
 
     /**
@@ -510,13 +612,13 @@ abstract class Game implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(GameTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(HistoryTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildGameQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildHistoryQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -526,10 +628,7 @@ abstract class Game implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collFleets = null;
-
-            $this->collHistories = null;
-
+            $this->aGame = null;
         } // if (deep)
     }
 
@@ -539,8 +638,8 @@ abstract class Game implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Game::setDeleted()
-     * @see Game::isDeleted()
+     * @see History::setDeleted()
+     * @see History::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -549,11 +648,11 @@ abstract class Game implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(GameTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(HistoryTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildGameQuery::create()
+            $deleteQuery = ChildHistoryQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -588,7 +687,7 @@ abstract class Game implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(GameTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(HistoryTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -607,7 +706,7 @@ abstract class Game implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                GameTableMap::addInstanceToPool($this);
+                HistoryTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -633,6 +732,18 @@ abstract class Game implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aGame !== null) {
+                if ($this->aGame->isModified() || $this->aGame->isNew()) {
+                    $affectedRows += $this->aGame->save($con);
+                }
+                $this->setGame($this->aGame);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -642,40 +753,6 @@ abstract class Game implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
-            }
-
-            if ($this->fleetsScheduledForDeletion !== null) {
-                if (!$this->fleetsScheduledForDeletion->isEmpty()) {
-                    \PropelModels\FleetQuery::create()
-                        ->filterByPrimaryKeys($this->fleetsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->fleetsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collFleets !== null) {
-                foreach ($this->collFleets as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->historiesScheduledForDeletion !== null) {
-                if (!$this->historiesScheduledForDeletion->isEmpty()) {
-                    \PropelModels\HistoryQuery::create()
-                        ->filterByPrimaryKeys($this->historiesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->historiesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collHistories !== null) {
-                foreach ($this->collHistories as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -698,21 +775,30 @@ abstract class Game implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[GameTableMap::COL_ID] = true;
+        $this->modifiedColumns[HistoryTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . GameTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . HistoryTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(GameTableMap::COL_ID)) {
+        if ($this->isColumnModified(HistoryTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(GameTableMap::COL_TOKEN)) {
-            $modifiedColumns[':p' . $index++]  = 'token';
+        if ($this->isColumnModified(HistoryTableMap::COL_ID_GAME)) {
+            $modifiedColumns[':p' . $index++]  = 'id_game';
+        }
+        if ($this->isColumnModified(HistoryTableMap::COL_PLAYER)) {
+            $modifiedColumns[':p' . $index++]  = 'player';
+        }
+        if ($this->isColumnModified(HistoryTableMap::COL_X)) {
+            $modifiedColumns[':p' . $index++]  = 'x';
+        }
+        if ($this->isColumnModified(HistoryTableMap::COL_Y)) {
+            $modifiedColumns[':p' . $index++]  = 'y';
         }
 
         $sql = sprintf(
-            'INSERT INTO game (%s) VALUES (%s)',
+            'INSERT INTO history (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -724,8 +810,17 @@ abstract class Game implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'token':
-                        $stmt->bindValue($identifier, $this->token, PDO::PARAM_STR);
+                    case 'id_game':
+                        $stmt->bindValue($identifier, $this->id_game, PDO::PARAM_INT);
+                        break;
+                    case 'player':
+                        $stmt->bindValue($identifier, $this->player, PDO::PARAM_STR);
+                        break;
+                    case 'x':
+                        $stmt->bindValue($identifier, $this->x, PDO::PARAM_INT);
+                        break;
+                    case 'y':
+                        $stmt->bindValue($identifier, $this->y, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -773,7 +868,7 @@ abstract class Game implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = GameTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = HistoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -793,7 +888,16 @@ abstract class Game implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getToken();
+                return $this->getIdGame();
+                break;
+            case 2:
+                return $this->getPlayer();
+                break;
+            case 3:
+                return $this->getX();
+                break;
+            case 4:
+                return $this->getY();
                 break;
             default:
                 return null;
@@ -819,14 +923,17 @@ abstract class Game implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['Game'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['History'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Game'][$this->hashCode()] = true;
-        $keys = GameTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['History'][$this->hashCode()] = true;
+        $keys = HistoryTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getToken(),
+            $keys[1] => $this->getIdGame(),
+            $keys[2] => $this->getPlayer(),
+            $keys[3] => $this->getX(),
+            $keys[4] => $this->getY(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -834,35 +941,20 @@ abstract class Game implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collFleets) {
+            if (null !== $this->aGame) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'fleets';
+                        $key = 'game';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'fleets';
+                        $key = 'game';
                         break;
                     default:
-                        $key = 'Fleets';
+                        $key = 'Game';
                 }
 
-                $result[$key] = $this->collFleets->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collHistories) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'histories';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'histories';
-                        break;
-                    default:
-                        $key = 'Histories';
-                }
-
-                $result[$key] = $this->collHistories->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->aGame->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -878,11 +970,11 @@ abstract class Game implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\PropelModels\Game
+     * @return $this|\PropelModels\History
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = GameTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = HistoryTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -893,7 +985,7 @@ abstract class Game implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\PropelModels\Game
+     * @return $this|\PropelModels\History
      */
     public function setByPosition($pos, $value)
     {
@@ -902,7 +994,16 @@ abstract class Game implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setToken($value);
+                $this->setIdGame($value);
+                break;
+            case 2:
+                $this->setPlayer($value);
+                break;
+            case 3:
+                $this->setX($value);
+                break;
+            case 4:
+                $this->setY($value);
                 break;
         } // switch()
 
@@ -928,13 +1029,22 @@ abstract class Game implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = GameTableMap::getFieldNames($keyType);
+        $keys = HistoryTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setToken($arr[$keys[1]]);
+            $this->setIdGame($arr[$keys[1]]);
+        }
+        if (array_key_exists($keys[2], $arr)) {
+            $this->setPlayer($arr[$keys[2]]);
+        }
+        if (array_key_exists($keys[3], $arr)) {
+            $this->setX($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setY($arr[$keys[4]]);
         }
     }
 
@@ -955,7 +1065,7 @@ abstract class Game implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\PropelModels\Game The current object, for fluid interface
+     * @return $this|\PropelModels\History The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -975,13 +1085,22 @@ abstract class Game implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(GameTableMap::DATABASE_NAME);
+        $criteria = new Criteria(HistoryTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(GameTableMap::COL_ID)) {
-            $criteria->add(GameTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(HistoryTableMap::COL_ID)) {
+            $criteria->add(HistoryTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(GameTableMap::COL_TOKEN)) {
-            $criteria->add(GameTableMap::COL_TOKEN, $this->token);
+        if ($this->isColumnModified(HistoryTableMap::COL_ID_GAME)) {
+            $criteria->add(HistoryTableMap::COL_ID_GAME, $this->id_game);
+        }
+        if ($this->isColumnModified(HistoryTableMap::COL_PLAYER)) {
+            $criteria->add(HistoryTableMap::COL_PLAYER, $this->player);
+        }
+        if ($this->isColumnModified(HistoryTableMap::COL_X)) {
+            $criteria->add(HistoryTableMap::COL_X, $this->x);
+        }
+        if ($this->isColumnModified(HistoryTableMap::COL_Y)) {
+            $criteria->add(HistoryTableMap::COL_Y, $this->y);
         }
 
         return $criteria;
@@ -999,8 +1118,8 @@ abstract class Game implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildGameQuery::create();
-        $criteria->add(GameTableMap::COL_ID, $this->id);
+        $criteria = ChildHistoryQuery::create();
+        $criteria->add(HistoryTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1062,34 +1181,17 @@ abstract class Game implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \PropelModels\Game (or compatible) type.
+     * @param      object $copyObj An object of \PropelModels\History (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setToken($this->getToken());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getFleets() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addFleet($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getHistories() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addHistory($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
+        $copyObj->setIdGame($this->getIdGame());
+        $copyObj->setPlayer($this->getPlayer());
+        $copyObj->setX($this->getX());
+        $copyObj->setY($this->getY());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1105,7 +1207,7 @@ abstract class Game implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \PropelModels\Game Clone of current object.
+     * @return \PropelModels\History Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1118,475 +1220,55 @@ abstract class Game implements ActiveRecordInterface
         return $copyObj;
     }
 
-
     /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
+     * Declares an association between this object and a ChildGame object.
      *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('Fleet' == $relationName) {
-            $this->initFleets();
-            return;
-        }
-        if ('History' == $relationName) {
-            $this->initHistories();
-            return;
-        }
-    }
-
-    /**
-     * Clears out the collFleets collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addFleets()
-     */
-    public function clearFleets()
-    {
-        $this->collFleets = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collFleets collection loaded partially.
-     */
-    public function resetPartialFleets($v = true)
-    {
-        $this->collFleetsPartial = $v;
-    }
-
-    /**
-     * Initializes the collFleets collection.
-     *
-     * By default this just sets the collFleets collection to an empty array (like clearcollFleets());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initFleets($overrideExisting = true)
-    {
-        if (null !== $this->collFleets && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = FleetTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collFleets = new $collectionClassName;
-        $this->collFleets->setModel('\PropelModels\Fleet');
-    }
-
-    /**
-     * Gets an array of ChildFleet objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildGame is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildFleet[] List of ChildFleet objects
+     * @param  ChildGame $v
+     * @return $this|\PropelModels\History The current object (for fluent API support)
      * @throws PropelException
      */
-    public function getFleets(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function setGame(ChildGame $v = null)
     {
-        $partial = $this->collFleetsPartial && !$this->isNew();
-        if (null === $this->collFleets || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collFleets) {
-                // return empty collection
-                $this->initFleets();
-            } else {
-                $collFleets = ChildFleetQuery::create(null, $criteria)
-                    ->filterByGame($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collFleetsPartial && count($collFleets)) {
-                        $this->initFleets(false);
-
-                        foreach ($collFleets as $obj) {
-                            if (false == $this->collFleets->contains($obj)) {
-                                $this->collFleets->append($obj);
-                            }
-                        }
-
-                        $this->collFleetsPartial = true;
-                    }
-
-                    return $collFleets;
-                }
-
-                if ($partial && $this->collFleets) {
-                    foreach ($this->collFleets as $obj) {
-                        if ($obj->isNew()) {
-                            $collFleets[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collFleets = $collFleets;
-                $this->collFleetsPartial = false;
-            }
+        if ($v === null) {
+            $this->setIdGame(NULL);
+        } else {
+            $this->setIdGame($v->getId());
         }
 
-        return $this->collFleets;
-    }
+        $this->aGame = $v;
 
-    /**
-     * Sets a collection of ChildFleet objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $fleets A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildGame The current object (for fluent API support)
-     */
-    public function setFleets(Collection $fleets, ConnectionInterface $con = null)
-    {
-        /** @var ChildFleet[] $fleetsToDelete */
-        $fleetsToDelete = $this->getFleets(new Criteria(), $con)->diff($fleets);
-
-
-        $this->fleetsScheduledForDeletion = $fleetsToDelete;
-
-        foreach ($fleetsToDelete as $fleetRemoved) {
-            $fleetRemoved->setGame(null);
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildGame object, it will not be re-added.
+        if ($v !== null) {
+            $v->addHistory($this);
         }
 
-        $this->collFleets = null;
-        foreach ($fleets as $fleet) {
-            $this->addFleet($fleet);
-        }
-
-        $this->collFleets = $fleets;
-        $this->collFleetsPartial = false;
 
         return $this;
     }
 
+
     /**
-     * Returns the number of related Fleet objects.
+     * Get the associated ChildGame object
      *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Fleet objects.
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildGame The associated ChildGame object.
      * @throws PropelException
      */
-    public function countFleets(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function getGame(ConnectionInterface $con = null)
     {
-        $partial = $this->collFleetsPartial && !$this->isNew();
-        if (null === $this->collFleets || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collFleets) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getFleets());
-            }
-
-            $query = ChildFleetQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByGame($this)
-                ->count($con);
+        if ($this->aGame === null && ($this->id_game != 0)) {
+            $this->aGame = ChildGameQuery::create()->findPk($this->id_game, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aGame->addHistories($this);
+             */
         }
 
-        return count($this->collFleets);
-    }
-
-    /**
-     * Method called to associate a ChildFleet object to this object
-     * through the ChildFleet foreign key attribute.
-     *
-     * @param  ChildFleet $l ChildFleet
-     * @return $this|\PropelModels\Game The current object (for fluent API support)
-     */
-    public function addFleet(ChildFleet $l)
-    {
-        if ($this->collFleets === null) {
-            $this->initFleets();
-            $this->collFleetsPartial = true;
-        }
-
-        if (!$this->collFleets->contains($l)) {
-            $this->doAddFleet($l);
-
-            if ($this->fleetsScheduledForDeletion and $this->fleetsScheduledForDeletion->contains($l)) {
-                $this->fleetsScheduledForDeletion->remove($this->fleetsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildFleet $fleet The ChildFleet object to add.
-     */
-    protected function doAddFleet(ChildFleet $fleet)
-    {
-        $this->collFleets[]= $fleet;
-        $fleet->setGame($this);
-    }
-
-    /**
-     * @param  ChildFleet $fleet The ChildFleet object to remove.
-     * @return $this|ChildGame The current object (for fluent API support)
-     */
-    public function removeFleet(ChildFleet $fleet)
-    {
-        if ($this->getFleets()->contains($fleet)) {
-            $pos = $this->collFleets->search($fleet);
-            $this->collFleets->remove($pos);
-            if (null === $this->fleetsScheduledForDeletion) {
-                $this->fleetsScheduledForDeletion = clone $this->collFleets;
-                $this->fleetsScheduledForDeletion->clear();
-            }
-            $this->fleetsScheduledForDeletion[]= clone $fleet;
-            $fleet->setGame(null);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Clears out the collHistories collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addHistories()
-     */
-    public function clearHistories()
-    {
-        $this->collHistories = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collHistories collection loaded partially.
-     */
-    public function resetPartialHistories($v = true)
-    {
-        $this->collHistoriesPartial = $v;
-    }
-
-    /**
-     * Initializes the collHistories collection.
-     *
-     * By default this just sets the collHistories collection to an empty array (like clearcollHistories());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initHistories($overrideExisting = true)
-    {
-        if (null !== $this->collHistories && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = HistoryTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collHistories = new $collectionClassName;
-        $this->collHistories->setModel('\PropelModels\History');
-    }
-
-    /**
-     * Gets an array of ChildHistory objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildGame is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildHistory[] List of ChildHistory objects
-     * @throws PropelException
-     */
-    public function getHistories(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collHistoriesPartial && !$this->isNew();
-        if (null === $this->collHistories || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collHistories) {
-                // return empty collection
-                $this->initHistories();
-            } else {
-                $collHistories = ChildHistoryQuery::create(null, $criteria)
-                    ->filterByGame($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collHistoriesPartial && count($collHistories)) {
-                        $this->initHistories(false);
-
-                        foreach ($collHistories as $obj) {
-                            if (false == $this->collHistories->contains($obj)) {
-                                $this->collHistories->append($obj);
-                            }
-                        }
-
-                        $this->collHistoriesPartial = true;
-                    }
-
-                    return $collHistories;
-                }
-
-                if ($partial && $this->collHistories) {
-                    foreach ($this->collHistories as $obj) {
-                        if ($obj->isNew()) {
-                            $collHistories[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collHistories = $collHistories;
-                $this->collHistoriesPartial = false;
-            }
-        }
-
-        return $this->collHistories;
-    }
-
-    /**
-     * Sets a collection of ChildHistory objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $histories A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildGame The current object (for fluent API support)
-     */
-    public function setHistories(Collection $histories, ConnectionInterface $con = null)
-    {
-        /** @var ChildHistory[] $historiesToDelete */
-        $historiesToDelete = $this->getHistories(new Criteria(), $con)->diff($histories);
-
-
-        $this->historiesScheduledForDeletion = $historiesToDelete;
-
-        foreach ($historiesToDelete as $historyRemoved) {
-            $historyRemoved->setGame(null);
-        }
-
-        $this->collHistories = null;
-        foreach ($histories as $history) {
-            $this->addHistory($history);
-        }
-
-        $this->collHistories = $histories;
-        $this->collHistoriesPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related History objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related History objects.
-     * @throws PropelException
-     */
-    public function countHistories(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collHistoriesPartial && !$this->isNew();
-        if (null === $this->collHistories || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collHistories) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getHistories());
-            }
-
-            $query = ChildHistoryQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByGame($this)
-                ->count($con);
-        }
-
-        return count($this->collHistories);
-    }
-
-    /**
-     * Method called to associate a ChildHistory object to this object
-     * through the ChildHistory foreign key attribute.
-     *
-     * @param  ChildHistory $l ChildHistory
-     * @return $this|\PropelModels\Game The current object (for fluent API support)
-     */
-    public function addHistory(ChildHistory $l)
-    {
-        if ($this->collHistories === null) {
-            $this->initHistories();
-            $this->collHistoriesPartial = true;
-        }
-
-        if (!$this->collHistories->contains($l)) {
-            $this->doAddHistory($l);
-
-            if ($this->historiesScheduledForDeletion and $this->historiesScheduledForDeletion->contains($l)) {
-                $this->historiesScheduledForDeletion->remove($this->historiesScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildHistory $history The ChildHistory object to add.
-     */
-    protected function doAddHistory(ChildHistory $history)
-    {
-        $this->collHistories[]= $history;
-        $history->setGame($this);
-    }
-
-    /**
-     * @param  ChildHistory $history The ChildHistory object to remove.
-     * @return $this|ChildGame The current object (for fluent API support)
-     */
-    public function removeHistory(ChildHistory $history)
-    {
-        if ($this->getHistories()->contains($history)) {
-            $pos = $this->collHistories->search($history);
-            $this->collHistories->remove($pos);
-            if (null === $this->historiesScheduledForDeletion) {
-                $this->historiesScheduledForDeletion = clone $this->collHistories;
-                $this->historiesScheduledForDeletion->clear();
-            }
-            $this->historiesScheduledForDeletion[]= clone $history;
-            $history->setGame(null);
-        }
-
-        return $this;
+        return $this->aGame;
     }
 
     /**
@@ -1596,8 +1278,14 @@ abstract class Game implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->aGame) {
+            $this->aGame->removeHistory($this);
+        }
         $this->id = null;
-        $this->token = null;
+        $this->id_game = null;
+        $this->player = null;
+        $this->x = null;
+        $this->y = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1617,20 +1305,9 @@ abstract class Game implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collFleets) {
-                foreach ($this->collFleets as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collHistories) {
-                foreach ($this->collHistories as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collFleets = null;
-        $this->collHistories = null;
+        $this->aGame = null;
     }
 
     /**
@@ -1640,7 +1317,7 @@ abstract class Game implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(GameTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(HistoryTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

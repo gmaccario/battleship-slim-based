@@ -2,8 +2,8 @@
 
 namespace PropelModels\Map;
 
-use PropelModels\Game;
-use PropelModels\GameQuery;
+use PropelModels\History;
+use PropelModels\HistoryQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'game' table.
+ * This class defines the structure of the 'history' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class GameTableMap extends TableMap
+class HistoryTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class GameTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'PropelModels.Map.GameTableMap';
+    const CLASS_NAME = 'PropelModels.Map.HistoryTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class GameTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'game';
+    const TABLE_NAME = 'history';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\PropelModels\\Game';
+    const OM_CLASS = '\\PropelModels\\History';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'PropelModels.Game';
+    const CLASS_DEFAULT = 'PropelModels.History';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -69,17 +69,32 @@ class GameTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'game.id';
+    const COL_ID = 'history.id';
 
     /**
-     * the column name for the token field
+     * the column name for the id_game field
      */
-    const COL_TOKEN = 'game.token';
+    const COL_ID_GAME = 'history.id_game';
+
+    /**
+     * the column name for the player field
+     */
+    const COL_PLAYER = 'history.player';
+
+    /**
+     * the column name for the x field
+     */
+    const COL_X = 'history.x';
+
+    /**
+     * the column name for the y field
+     */
+    const COL_Y = 'history.y';
 
     /**
      * The default string format for model objects of the related table
@@ -93,11 +108,11 @@ class GameTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Token', ),
-        self::TYPE_CAMELNAME     => array('id', 'token', ),
-        self::TYPE_COLNAME       => array(GameTableMap::COL_ID, GameTableMap::COL_TOKEN, ),
-        self::TYPE_FIELDNAME     => array('id', 'token', ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id', 'IdGame', 'Player', 'X', 'Y', ),
+        self::TYPE_CAMELNAME     => array('id', 'idGame', 'player', 'x', 'y', ),
+        self::TYPE_COLNAME       => array(HistoryTableMap::COL_ID, HistoryTableMap::COL_ID_GAME, HistoryTableMap::COL_PLAYER, HistoryTableMap::COL_X, HistoryTableMap::COL_Y, ),
+        self::TYPE_FIELDNAME     => array('id', 'id_game', 'player', 'x', 'y', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -107,11 +122,11 @@ class GameTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Token' => 1, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'token' => 1, ),
-        self::TYPE_COLNAME       => array(GameTableMap::COL_ID => 0, GameTableMap::COL_TOKEN => 1, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'token' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'IdGame' => 1, 'Player' => 2, 'X' => 3, 'Y' => 4, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'idGame' => 1, 'player' => 2, 'x' => 3, 'y' => 4, ),
+        self::TYPE_COLNAME       => array(HistoryTableMap::COL_ID => 0, HistoryTableMap::COL_ID_GAME => 1, HistoryTableMap::COL_PLAYER => 2, HistoryTableMap::COL_X => 3, HistoryTableMap::COL_Y => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'id_game' => 1, 'player' => 2, 'x' => 3, 'y' => 4, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -124,15 +139,18 @@ class GameTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('game');
-        $this->setPhpName('Game');
+        $this->setName('history');
+        $this->setPhpName('History');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\PropelModels\\Game');
+        $this->setClassName('\\PropelModels\\History');
         $this->setPackage('PropelModels');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('token', 'Token', 'VARCHAR', true, 250, '');
+        $this->addForeignKey('id_game', 'IdGame', 'INTEGER', 'game', 'id', true, null, null);
+        $this->addColumn('player', 'Player', 'VARCHAR', true, 250, '');
+        $this->addColumn('x', 'X', 'INTEGER', true, null, null);
+        $this->addColumn('y', 'Y', 'INTEGER', true, null, null);
     } // initialize()
 
     /**
@@ -140,31 +158,14 @@ class GameTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Fleet', '\\PropelModels\\Fleet', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Game', '\\PropelModels\\Game', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':id_game',
     1 => ':id',
   ),
-), 'CASCADE', 'CASCADE', 'Fleets', false);
-        $this->addRelation('History', '\\PropelModels\\History', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':id_game',
-    1 => ':id',
-  ),
-), 'CASCADE', 'CASCADE', 'Histories', false);
+), 'CASCADE', 'CASCADE', null, false);
     } // buildRelations()
-    /**
-     * Method to invalidate the instance pool of all tables related to game     * by a foreign key with ON DELETE CASCADE
-     */
-    public static function clearRelatedInstancePool()
-    {
-        // Invalidate objects in related instance pools,
-        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-        FleetTableMap::clearInstancePool();
-        HistoryTableMap::clearInstancePool();
-    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -223,7 +224,7 @@ class GameTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? GameTableMap::CLASS_DEFAULT : GameTableMap::OM_CLASS;
+        return $withPrefix ? HistoryTableMap::CLASS_DEFAULT : HistoryTableMap::OM_CLASS;
     }
 
     /**
@@ -237,22 +238,22 @@ class GameTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Game object, last column rank)
+     * @return array           (History object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = GameTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = GameTableMap::getInstanceFromPool($key))) {
+        $key = HistoryTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = HistoryTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + GameTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + HistoryTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = GameTableMap::OM_CLASS;
-            /** @var Game $obj */
+            $cls = HistoryTableMap::OM_CLASS;
+            /** @var History $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            GameTableMap::addInstanceToPool($obj, $key);
+            HistoryTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -275,18 +276,18 @@ class GameTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = GameTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = GameTableMap::getInstanceFromPool($key))) {
+            $key = HistoryTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = HistoryTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Game $obj */
+                /** @var History $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                GameTableMap::addInstanceToPool($obj, $key);
+                HistoryTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -307,11 +308,17 @@ class GameTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(GameTableMap::COL_ID);
-            $criteria->addSelectColumn(GameTableMap::COL_TOKEN);
+            $criteria->addSelectColumn(HistoryTableMap::COL_ID);
+            $criteria->addSelectColumn(HistoryTableMap::COL_ID_GAME);
+            $criteria->addSelectColumn(HistoryTableMap::COL_PLAYER);
+            $criteria->addSelectColumn(HistoryTableMap::COL_X);
+            $criteria->addSelectColumn(HistoryTableMap::COL_Y);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.token');
+            $criteria->addSelectColumn($alias . '.id_game');
+            $criteria->addSelectColumn($alias . '.player');
+            $criteria->addSelectColumn($alias . '.x');
+            $criteria->addSelectColumn($alias . '.y');
         }
     }
 
@@ -324,7 +331,7 @@ class GameTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(GameTableMap::DATABASE_NAME)->getTable(GameTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(HistoryTableMap::DATABASE_NAME)->getTable(HistoryTableMap::TABLE_NAME);
     }
 
     /**
@@ -332,16 +339,16 @@ class GameTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(GameTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(GameTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new GameTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(HistoryTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(HistoryTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new HistoryTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Game or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a History or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Game object or primary key or array of primary keys
+     * @param mixed               $values Criteria or History object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -352,27 +359,27 @@ class GameTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(GameTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(HistoryTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \PropelModels\Game) { // it's a model object
+        } elseif ($values instanceof \PropelModels\History) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(GameTableMap::DATABASE_NAME);
-            $criteria->add(GameTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(HistoryTableMap::DATABASE_NAME);
+            $criteria->add(HistoryTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = GameQuery::create()->mergeWith($criteria);
+        $query = HistoryQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            GameTableMap::clearInstancePool();
+            HistoryTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                GameTableMap::removeInstanceFromPool($singleval);
+                HistoryTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -380,20 +387,20 @@ class GameTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the game table.
+     * Deletes all rows from the history table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return GameQuery::create()->doDeleteAll($con);
+        return HistoryQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Game or Criteria object.
+     * Performs an INSERT on the database, given a History or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Game object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or History object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -402,22 +409,22 @@ class GameTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(GameTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(HistoryTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Game object
+            $criteria = $criteria->buildCriteria(); // build Criteria from History object
         }
 
-        if ($criteria->containsKey(GameTableMap::COL_ID) && $criteria->keyContainsValue(GameTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.GameTableMap::COL_ID.')');
+        if ($criteria->containsKey(HistoryTableMap::COL_ID) && $criteria->keyContainsValue(HistoryTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.HistoryTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = GameQuery::create()->mergeWith($criteria);
+        $query = HistoryQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -426,7 +433,7 @@ class GameTableMap extends TableMap
         });
     }
 
-} // GameTableMap
+} // HistoryTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-GameTableMap::buildTableMap();
+HistoryTableMap::buildTableMap();
