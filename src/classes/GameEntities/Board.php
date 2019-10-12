@@ -115,25 +115,14 @@ if(!class_exists('Board'))
                         {
                             $ship->setStartX($randX);
                             $ship->setStartY($randY);
-
+                            
                             $ship->setDirection($directions[$idRandDirection]);
-
+                            
                             $this->placeShip($ship);
                             
-                            // Check the ship length
-                            if($directions[$idRandDirection] == 'horizontal')
-                            {
-                                for($i=$randY; $i < ($randY + $ship->getLength()); $i++)
-                                {
-                                    $this->board[$randX][$i] = 1;
-                                }
-                            }
-                            else {
-                                for($i=$randX; $i < ($randX + $ship->getLength()); $i++)
-                                {
-                                    $this->board[$i][$randY] = 1;
-                                }
-                            }
+                            $ship->setCoordinates($randX, $randY);
+                            
+                            array_push($this->board, $ship->getCoordinates());
                             
                             $placingShip = true;
                         }
