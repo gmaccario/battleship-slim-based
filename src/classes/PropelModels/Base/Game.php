@@ -83,6 +83,14 @@ abstract class Game implements ActiveRecordInterface
     protected $token;
 
     /**
+     * The value for the difficulty field.
+     *
+     * Note: this column has a database default value of: ''
+     * @var        string
+     */
+    protected $difficulty;
+
+    /**
      * @var        ObjectCollection|ChildFleet[] Collection to store aggregation of ChildFleet objects.
      */
     protected $collFleets;
@@ -123,6 +131,7 @@ abstract class Game implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->token = '';
+        $this->difficulty = '';
     }
 
     /**
@@ -373,6 +382,16 @@ abstract class Game implements ActiveRecordInterface
     }
 
     /**
+     * Get the [difficulty] column value.
+     *
+     * @return string
+     */
+    public function getDifficulty()
+    {
+        return $this->difficulty;
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -413,6 +432,26 @@ abstract class Game implements ActiveRecordInterface
     } // setToken()
 
     /**
+     * Set the value of [difficulty] column.
+     *
+     * @param string $v new value
+     * @return $this|\PropelModels\Game The current object (for fluent API support)
+     */
+    public function setDifficulty($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->difficulty !== $v) {
+            $this->difficulty = $v;
+            $this->modifiedColumns[GameTableMap::COL_DIFFICULTY] = true;
+        }
+
+        return $this;
+    } // setDifficulty()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -423,6 +462,10 @@ abstract class Game implements ActiveRecordInterface
     public function hasOnlyDefaultValues()
     {
             if ($this->token !== '') {
+                return false;
+            }
+
+            if ($this->difficulty !== '') {
                 return false;
             }
 
@@ -457,6 +500,9 @@ abstract class Game implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : GameTableMap::translateFieldName('Token', TableMap::TYPE_PHPNAME, $indexType)];
             $this->token = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : GameTableMap::translateFieldName('Difficulty', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->difficulty = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -465,7 +511,7 @@ abstract class Game implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = GameTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 3; // 3 = GameTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PropelModels\\Game'), 0, $e);
@@ -710,6 +756,9 @@ abstract class Game implements ActiveRecordInterface
         if ($this->isColumnModified(GameTableMap::COL_TOKEN)) {
             $modifiedColumns[':p' . $index++]  = 'token';
         }
+        if ($this->isColumnModified(GameTableMap::COL_DIFFICULTY)) {
+            $modifiedColumns[':p' . $index++]  = 'difficulty';
+        }
 
         $sql = sprintf(
             'INSERT INTO game (%s) VALUES (%s)',
@@ -726,6 +775,9 @@ abstract class Game implements ActiveRecordInterface
                         break;
                     case 'token':
                         $stmt->bindValue($identifier, $this->token, PDO::PARAM_STR);
+                        break;
+                    case 'difficulty':
+                        $stmt->bindValue($identifier, $this->difficulty, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -795,6 +847,9 @@ abstract class Game implements ActiveRecordInterface
             case 1:
                 return $this->getToken();
                 break;
+            case 2:
+                return $this->getDifficulty();
+                break;
             default:
                 return null;
                 break;
@@ -827,6 +882,7 @@ abstract class Game implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getToken(),
+            $keys[2] => $this->getDifficulty(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -904,6 +960,9 @@ abstract class Game implements ActiveRecordInterface
             case 1:
                 $this->setToken($value);
                 break;
+            case 2:
+                $this->setDifficulty($value);
+                break;
         } // switch()
 
         return $this;
@@ -935,6 +994,9 @@ abstract class Game implements ActiveRecordInterface
         }
         if (array_key_exists($keys[1], $arr)) {
             $this->setToken($arr[$keys[1]]);
+        }
+        if (array_key_exists($keys[2], $arr)) {
+            $this->setDifficulty($arr[$keys[2]]);
         }
     }
 
@@ -982,6 +1044,9 @@ abstract class Game implements ActiveRecordInterface
         }
         if ($this->isColumnModified(GameTableMap::COL_TOKEN)) {
             $criteria->add(GameTableMap::COL_TOKEN, $this->token);
+        }
+        if ($this->isColumnModified(GameTableMap::COL_DIFFICULTY)) {
+            $criteria->add(GameTableMap::COL_DIFFICULTY, $this->difficulty);
         }
 
         return $criteria;
@@ -1070,6 +1135,7 @@ abstract class Game implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setToken($this->getToken());
+        $copyObj->setDifficulty($this->getDifficulty());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1598,6 +1664,7 @@ abstract class Game implements ActiveRecordInterface
     {
         $this->id = null;
         $this->token = null;
+        $this->difficulty = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

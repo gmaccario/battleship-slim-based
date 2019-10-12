@@ -39,6 +39,8 @@ CREATE TABLE `game`
     UNIQUE INDEX `unique_index_games` (`id`, `token`)
 ) ENGINE=InnoDB;
 
+ALTER TABLE game ADD `difficulty` VARCHAR(250) DEFAULT '' NOT NULL;
+
 -- ---------------------------------------------------------------------
 -- history
 -- ---------------------------------------------------------------------

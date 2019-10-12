@@ -59,7 +59,7 @@ class GameTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 3;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class GameTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 3;
 
     /**
      * the column name for the id field
@@ -80,6 +80,11 @@ class GameTableMap extends TableMap
      * the column name for the token field
      */
     const COL_TOKEN = 'game.token';
+
+    /**
+     * the column name for the difficulty field
+     */
+    const COL_DIFFICULTY = 'game.difficulty';
 
     /**
      * The default string format for model objects of the related table
@@ -93,11 +98,11 @@ class GameTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Token', ),
-        self::TYPE_CAMELNAME     => array('id', 'token', ),
-        self::TYPE_COLNAME       => array(GameTableMap::COL_ID, GameTableMap::COL_TOKEN, ),
-        self::TYPE_FIELDNAME     => array('id', 'token', ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id', 'Token', 'Difficulty', ),
+        self::TYPE_CAMELNAME     => array('id', 'token', 'difficulty', ),
+        self::TYPE_COLNAME       => array(GameTableMap::COL_ID, GameTableMap::COL_TOKEN, GameTableMap::COL_DIFFICULTY, ),
+        self::TYPE_FIELDNAME     => array('id', 'token', 'difficulty', ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -107,11 +112,11 @@ class GameTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Token' => 1, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'token' => 1, ),
-        self::TYPE_COLNAME       => array(GameTableMap::COL_ID => 0, GameTableMap::COL_TOKEN => 1, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'token' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Token' => 1, 'Difficulty' => 2, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'token' => 1, 'difficulty' => 2, ),
+        self::TYPE_COLNAME       => array(GameTableMap::COL_ID => 0, GameTableMap::COL_TOKEN => 1, GameTableMap::COL_DIFFICULTY => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'token' => 1, 'difficulty' => 2, ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -133,6 +138,7 @@ class GameTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('token', 'Token', 'VARCHAR', true, 250, '');
+        $this->addColumn('difficulty', 'Difficulty', 'VARCHAR', true, 250, '');
     } // initialize()
 
     /**
@@ -309,9 +315,11 @@ class GameTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(GameTableMap::COL_ID);
             $criteria->addSelectColumn(GameTableMap::COL_TOKEN);
+            $criteria->addSelectColumn(GameTableMap::COL_DIFFICULTY);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.token');
+            $criteria->addSelectColumn($alias . '.difficulty');
         }
     }
 
