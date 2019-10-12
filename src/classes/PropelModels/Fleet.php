@@ -20,7 +20,7 @@ use GameEntities\SmallShip;
  */
 class Fleet extends BaseFleet
 {
-    private $fleet = array();
+    private $ships = array();
     
     /**
      * @name __construct
@@ -32,7 +32,7 @@ class Fleet extends BaseFleet
     {
         if($ship)
         {
-            array_push($this->fleet, $ship);
+            array_push($this->ships, $ship);
         }
     }
     
@@ -44,7 +44,7 @@ class Fleet extends BaseFleet
      */
     public function getFleet() : array
     {
-        return $this->fleet;
+        return $this->ships;
     }
     
     /**
@@ -55,7 +55,7 @@ class Fleet extends BaseFleet
      */
     public function addShip(Ship $ship)
     {
-        array_push($this->fleet, $ship);
+        array_push($this->ships, $ship);
     }
     
     /**
@@ -66,18 +66,18 @@ class Fleet extends BaseFleet
      */
     public function prepareFleet()
     {
-        array_push($this->fleet, new Battleship());
+        array_push($this->ships, new Battleship());
         
-        array_push($this->fleet, new AircraftCarrier());
-        array_push($this->fleet, new AircraftCarrier());
+        array_push($this->ships, new AircraftCarrier());
+        array_push($this->ships, new AircraftCarrier());
         
-        array_push($this->fleet, new Destroyer());
-        array_push($this->fleet, new Destroyer());
-        array_push($this->fleet, new Destroyer());
+        array_push($this->ships, new Destroyer());
+        array_push($this->ships, new Destroyer());
+        array_push($this->ships, new Destroyer());
         
-        array_push($this->fleet, new SmallShip());
-        array_push($this->fleet, new SmallShip());
-        array_push($this->fleet, new SmallShip());
-        array_push($this->fleet, new SmallShip());
+        array_push($this->ships, new SmallShip());
+        array_push($this->ships, new SmallShip());
+        array_push($this->ships, new SmallShip());
+        array_push($this->ships, new SmallShip());
     }
 }
