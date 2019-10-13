@@ -29,34 +29,31 @@
                 </div>
             </div>
             
-            <div class="container-fluid">
+            <div id="app" class="container-fluid">
                 <div class="row">
                 	<div class="col">
-                		<p>Choose your level</p>
-                		<button type="button" class="btn btn-primary">Be Gentle!</button>
-                        <button type="button" class="btn btn-secondary">I'm too young to die</button>
-                        <button type="button" class="btn btn-warning">Warning Zone</button>
-                        <button type="button" class="btn btn-danger">Danger Zone</button>
-                        <button type="button" class="btn btn-dark">Ultra Nightmare</button>
+                		<div class="levels">
+                    		<p>Choose your level</p>
+                    		<difficulty level="be-gentle" cls="btn-primary"></difficulty>
+                    		<difficulty level="too-young-to-die" cls="btn-secondary"></difficulty>
+                    		<difficulty level="warning-zone" cls="btn-warning"></difficulty>
+                    		<difficulty level="danger-zone" cls="btn-danger"></difficulty>
+                    		<difficulty level="ultre-nightmare" cls="btn-dark"></difficulty>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="container-fluid">
-                <div class="row">
-                	<div class="col">
-                		<p></p>
-                		
-                    	<div id="app">
-                    		<div id="player1">
-                    			<board player=1></board>
-                    			<fleet player=1></fleet>
-                    		</div>
-                    		<div id="player2">
-                    			<board player=2></board>
-                    			<fleet player=2></fleet>
-                    		</div>
-                    	</div>
+                <div class="row" v-if="token">
+					<div class="col">
+						<div id="player1">
+                			<board player=1 :token="token"></board>
+                			<fleet player=1 :token="token" :game-started="gameStarted"></fleet>
+                		</div>
+                	</div>
+					<div class="col">
+                		<div id="player2">
+                			<board player=2 :token="token"></board>
+                			<fleet player=2 :token="token" :game-started="gameStarted"></fleet>
+                		</div>
                     </div>
                 </div>
             </div>
