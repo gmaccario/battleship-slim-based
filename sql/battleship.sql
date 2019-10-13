@@ -4,6 +4,23 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ---------------------------------------------------------------------
+-- game
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `game`;
+
+CREATE TABLE `game`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `token` VARCHAR(250) DEFAULT '' NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `id` (`id`),
+    UNIQUE INDEX `unique_index_games` (`id`, `token`)
+) ENGINE=InnoDB;
+
+ALTER TABLE game ADD `difficulty` VARCHAR(250) DEFAULT '' NOT NULL;
+
+-- ---------------------------------------------------------------------
 -- fleet
 -- ---------------------------------------------------------------------
 
@@ -23,23 +40,6 @@ CREATE TABLE `fleet`
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
-
--- ---------------------------------------------------------------------
--- game
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `game`;
-
-CREATE TABLE `game`
-(
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `token` VARCHAR(250) DEFAULT '' NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE INDEX `id` (`id`),
-    UNIQUE INDEX `unique_index_games` (`id`, `token`)
-) ENGINE=InnoDB;
-
-ALTER TABLE game ADD `difficulty` VARCHAR(250) DEFAULT '' NOT NULL;
 
 -- ---------------------------------------------------------------------
 -- history

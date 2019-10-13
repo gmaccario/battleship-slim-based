@@ -46,40 +46,46 @@ if(!class_exists('NewGameController'))
             // Get token from header
             $token = $request->getHeaderLine('Authorization');
             
-            // New Game
-            $game = new Game();
-            $game->setToken($token);
-            $game->setDifficulty($difficulty);
-            $game->save();
-            
-            foreach($this->players as $player)
+            if($token)
             {
-                // Board
-                $board = new Board();
-                $board->createBoard();
+                // New Game
+                $game = new Game();
+                $game->setToken($token);
+                $game->setDifficulty($difficulty);
+                $game->save();
                 
-                // Fleet
-                $fleet = new Fleet();
-                $fleet->setIdGame($game->getId());
-                $fleet->setSide($player);
-                $fleet->prepareFleet();
-                $fleet->save();
-                
-                // Positioning ships on the board
-                $board->prepareBoard($fleet);
-                
-                // Save ships on db
-                foreach($fleet->getFleet() as $FleetShip)
+                foreach($this->players as $player)
                 {
-                    $ship = new Ship();
-                    $ship->setIdFleet($fleet->getId());
-                    $ship->setType($FleetShip->getType());
-                    $ship->setLength($FleetShip->getLength());
-                    $ship->setStartx($FleetShip->getStartx());
-                    $ship->setStarty($FleetShip->getStarty());
-                    $ship->setDirection($FleetShip->getDirection());
-                    $ship->save();
+                    // Board
+                    $board = new Board();
+                    $board->createBoard();
+                    
+                    // Fleet
+                    $fleet = new Fleet();
+                    $fleet->setIdGame($game->getId());
+                    $fleet->setSide($player);
+                    $fleet->prepareFleet();
+                    $fleet->save();
+                    
+                    // Positioning ships on the board
+                    $board->prepareBoard($fleet);
+                    
+                    // Save ships on db
+                    foreach($fleet->getFleet() as $FleetShip)
+                    {
+                        $ship = new Ship();
+                        $ship->setIdFleet($fleet->getId());
+                        $ship->setType($FleetShip->getType());
+                        $ship->setLength($FleetShip->getLength());
+                        $ship->setStartx($FleetShip->getStartx());
+                        $ship->setStarty($FleetShip->getStarty());
+                        $ship->setDirection($FleetShip->getDirection());
+                        $ship->save();
+                    }
                 }
+                
+                // 201 Created
+                return $response->withJson(array('results' => $token), 201);
             }
             
             // 200 OK
