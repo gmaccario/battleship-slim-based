@@ -27,6 +27,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildShipQuery orderByStartx($order = Criteria::ASC) Order by the startX column
  * @method     ChildShipQuery orderByStarty($order = Criteria::ASC) Order by the startY column
  * @method     ChildShipQuery orderByDirection($order = Criteria::ASC) Order by the direction column
+ * @method     ChildShipQuery orderByCoordinates($order = Criteria::ASC) Order by the coordinates column
  *
  * @method     ChildShipQuery groupById() Group by the id column
  * @method     ChildShipQuery groupByIdFleet() Group by the id_fleet column
@@ -35,6 +36,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildShipQuery groupByStartx() Group by the startX column
  * @method     ChildShipQuery groupByStarty() Group by the startY column
  * @method     ChildShipQuery groupByDirection() Group by the direction column
+ * @method     ChildShipQuery groupByCoordinates() Group by the coordinates column
  *
  * @method     ChildShipQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildShipQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -65,7 +67,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildShip findOneByLength(int $length) Return the first ChildShip filtered by the length column
  * @method     ChildShip findOneByStartx(int $startX) Return the first ChildShip filtered by the startX column
  * @method     ChildShip findOneByStarty(int $startY) Return the first ChildShip filtered by the startY column
- * @method     ChildShip findOneByDirection(string $direction) Return the first ChildShip filtered by the direction column *
+ * @method     ChildShip findOneByDirection(string $direction) Return the first ChildShip filtered by the direction column
+ * @method     ChildShip findOneByCoordinates(string $coordinates) Return the first ChildShip filtered by the coordinates column *
 
  * @method     ChildShip requirePk($key, ConnectionInterface $con = null) Return the ChildShip by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildShip requireOne(ConnectionInterface $con = null) Return the first ChildShip matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -77,6 +80,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildShip requireOneByStartx(int $startX) Return the first ChildShip filtered by the startX column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildShip requireOneByStarty(int $startY) Return the first ChildShip filtered by the startY column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildShip requireOneByDirection(string $direction) Return the first ChildShip filtered by the direction column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildShip requireOneByCoordinates(string $coordinates) Return the first ChildShip filtered by the coordinates column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildShip[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildShip objects based on current ModelCriteria
  * @method     ChildShip[]|ObjectCollection findById(int $id) Return ChildShip objects filtered by the id column
@@ -86,6 +90,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildShip[]|ObjectCollection findByStartx(int $startX) Return ChildShip objects filtered by the startX column
  * @method     ChildShip[]|ObjectCollection findByStarty(int $startY) Return ChildShip objects filtered by the startY column
  * @method     ChildShip[]|ObjectCollection findByDirection(string $direction) Return ChildShip objects filtered by the direction column
+ * @method     ChildShip[]|ObjectCollection findByCoordinates(string $coordinates) Return ChildShip objects filtered by the coordinates column
  * @method     ChildShip[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -184,7 +189,7 @@ abstract class ShipQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, id_fleet, type, length, startX, startY, direction FROM ship WHERE id = :p0';
+        $sql = 'SELECT id, id_fleet, type, length, startX, startY, direction, coordinates FROM ship WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -529,6 +534,31 @@ abstract class ShipQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ShipTableMap::COL_DIRECTION, $direction, $comparison);
+    }
+
+    /**
+     * Filter the query on the coordinates column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCoordinates('fooValue');   // WHERE coordinates = 'fooValue'
+     * $query->filterByCoordinates('%fooValue%', Criteria::LIKE); // WHERE coordinates LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $coordinates The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildShipQuery The current query, for fluid interface
+     */
+    public function filterByCoordinates($coordinates = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($coordinates)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ShipTableMap::COL_COORDINATES, $coordinates, $comparison);
     }
 
     /**

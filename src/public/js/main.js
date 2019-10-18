@@ -33,8 +33,6 @@ const Cell = Vue.component('cell',{
 		
 		hitCoordinates(row, col) {
 			
-			//console.log("row", this.row, "col", this.col, 'player', this.player);
-			
 			if(!this.attacked)
 			{
 				axios.get('/api/hit-coordinates/player' + this.player + '/' + this.row + '/' + this.col, {
@@ -43,19 +41,18 @@ const Cell = Vue.component('cell',{
 	    		
 				}).then((response) => {
 
-					console.log('hitCoordinates', response.data.results);
+					// console.log('hitCoordinates', response.data.results);
 					
 					if(!response.data.results.hit)
 					{
 						this.attacked = true;
 					}
 					else {
-						this.attacked = true;
-						this.hit = true;
 						
-						//console.log('hitShip', response.data.results.shipId);
-						this.$root.$emit('hitShip', response.data.results.shipId);
-						//EventBus.$emit('hitShip', response.data.results.shipId);
+						this.hit = true;
+						this.attacked = true;
+						
+						this.$root.$emit('hitShip', response.data.results.shipId, response.data.results.hull);
 					}
 				});	
 			}
@@ -76,19 +73,25 @@ const Hull = Vue.component('hull',{
 		
 	},
 	props: {
-		shipId: Number,
-		hullId: Number,
+		id: Number,
+		ship: Object,
 	},
 	data(){
 		return {
-			
+			hit: false
 		}
 	},
 	created() {
 		
 	},
 	mounted() {
-		
+		this.$root.$on('hitHull', (shipId, hullId) => {
+
+			if(shipId == this.ship.id && hullId == this.id) 
+			{
+				this.hit = true;
+			}
+		})
 	},
 	watch: {
 		
@@ -96,7 +99,7 @@ const Hull = Vue.component('hull',{
 	methods: {
 		
 	},
-  	template:`<div class="ship-hull" :class="'hullId-' + hullId"></div>`
+  	template:`<div class="ship-hull" :class="{'hit': hit}" :title="ship.type"></div>`
 });
 
 // Ship Component
@@ -109,8 +112,7 @@ const Ship = Vue.component('ship',{
 	},
 	data(){
 		return {
-			id: 0,
-			//hulls: []
+			shipId: 0,
 		}
 	},
 	created() {
@@ -119,12 +121,11 @@ const Ship = Vue.component('ship',{
 	},
 	mounted() {
 		
-		this.$root.$on('hitShip', (shipId) => {
+		this.$root.$on('hitShip', (shipId, hullId) => {
 			
-			if(shipId == this.id) 
+			if(shipId == this.shipId) 
 			{
-				//console.log(shipId);
-				// @todo Make it red
+				this.$root.$emit('hitHull', shipId, hullId);
 			}
 		})
 	},
@@ -135,12 +136,12 @@ const Ship = Vue.component('ship',{
 		
 		setup(){
 			
-			this.id = this.ship.id;
+			this.shipId = this.ship.id;
 		}
 	},
   	template:`<div class="ship" :class="'ship-' + ship.id + ' type-' + ship.type.split(' ').join('-').toLowerCase()">
   				<div v-for="hullId in ship.len">
-  					<hull :shipId="ship.id" :hullId="hullId"></hull>
+  					<hull :ship="ship" :id="hullId - 1"></hull>
   				</div>
   			</diV>`
 });
@@ -183,7 +184,7 @@ const Board = Vue.component('board',{
 		        	<td class="board-row-header" :class="'board-row-header-' + (row - 1)">{{ alphabet[row - 1].toUpperCase() }}</td>
 		        	
 		        	<td v-for="col in cols" class="board-cell" :class="'board-cell-row-' + (row - 1) + ' board-cell-col-' + (col - 1)">
-	        			<cell :token="token" :player="player" :cols="cols" :col="col" :row="row" :alphabet="alphabet"></cell>
+	        			<cell :token="token" :player="player" :cols="cols" :col="col - 1" :row="row - 1" :alphabet="alphabet"></cell>
 	        		</td>
 		        </tr>
 		    </tbody>

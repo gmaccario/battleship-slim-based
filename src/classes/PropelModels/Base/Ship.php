@@ -113,6 +113,14 @@ abstract class Ship implements ActiveRecordInterface
     protected $direction;
 
     /**
+     * The value for the coordinates field.
+     *
+     * Note: this column has a database default value of: ''
+     * @var        string
+     */
+    protected $coordinates;
+
+    /**
      * @var        ChildFleet
      */
     protected $aFleet;
@@ -135,6 +143,7 @@ abstract class Ship implements ActiveRecordInterface
     {
         $this->type = '';
         $this->direction = '';
+        $this->coordinates = '';
     }
 
     /**
@@ -435,6 +444,16 @@ abstract class Ship implements ActiveRecordInterface
     }
 
     /**
+     * Get the [coordinates] column value.
+     *
+     * @return string
+     */
+    public function getCoordinates()
+    {
+        return $this->coordinates;
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -579,6 +598,26 @@ abstract class Ship implements ActiveRecordInterface
     } // setDirection()
 
     /**
+     * Set the value of [coordinates] column.
+     *
+     * @param string $v new value
+     * @return $this|\PropelModels\Ship The current object (for fluent API support)
+     */
+    public function setCoordinates($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->coordinates !== $v) {
+            $this->coordinates = $v;
+            $this->modifiedColumns[ShipTableMap::COL_COORDINATES] = true;
+        }
+
+        return $this;
+    } // setCoordinates()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -593,6 +632,10 @@ abstract class Ship implements ActiveRecordInterface
             }
 
             if ($this->direction !== '') {
+                return false;
+            }
+
+            if ($this->coordinates !== '') {
                 return false;
             }
 
@@ -642,6 +685,9 @@ abstract class Ship implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ShipTableMap::translateFieldName('Direction', TableMap::TYPE_PHPNAME, $indexType)];
             $this->direction = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : ShipTableMap::translateFieldName('Coordinates', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->coordinates = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -650,7 +696,7 @@ abstract class Ship implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = ShipTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = ShipTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PropelModels\\Ship'), 0, $e);
@@ -888,6 +934,9 @@ abstract class Ship implements ActiveRecordInterface
         if ($this->isColumnModified(ShipTableMap::COL_DIRECTION)) {
             $modifiedColumns[':p' . $index++]  = 'direction';
         }
+        if ($this->isColumnModified(ShipTableMap::COL_COORDINATES)) {
+            $modifiedColumns[':p' . $index++]  = 'coordinates';
+        }
 
         $sql = sprintf(
             'INSERT INTO ship (%s) VALUES (%s)',
@@ -919,6 +968,9 @@ abstract class Ship implements ActiveRecordInterface
                         break;
                     case 'direction':
                         $stmt->bindValue($identifier, $this->direction, PDO::PARAM_STR);
+                        break;
+                    case 'coordinates':
+                        $stmt->bindValue($identifier, $this->coordinates, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1003,6 +1055,9 @@ abstract class Ship implements ActiveRecordInterface
             case 6:
                 return $this->getDirection();
                 break;
+            case 7:
+                return $this->getCoordinates();
+                break;
             default:
                 return null;
                 break;
@@ -1040,6 +1095,7 @@ abstract class Ship implements ActiveRecordInterface
             $keys[4] => $this->getStartx(),
             $keys[5] => $this->getStarty(),
             $keys[6] => $this->getDirection(),
+            $keys[7] => $this->getCoordinates(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1117,6 +1173,9 @@ abstract class Ship implements ActiveRecordInterface
             case 6:
                 $this->setDirection($value);
                 break;
+            case 7:
+                $this->setCoordinates($value);
+                break;
         } // switch()
 
         return $this;
@@ -1163,6 +1222,9 @@ abstract class Ship implements ActiveRecordInterface
         }
         if (array_key_exists($keys[6], $arr)) {
             $this->setDirection($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setCoordinates($arr[$keys[7]]);
         }
     }
 
@@ -1225,6 +1287,9 @@ abstract class Ship implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ShipTableMap::COL_DIRECTION)) {
             $criteria->add(ShipTableMap::COL_DIRECTION, $this->direction);
+        }
+        if ($this->isColumnModified(ShipTableMap::COL_COORDINATES)) {
+            $criteria->add(ShipTableMap::COL_COORDINATES, $this->coordinates);
         }
 
         return $criteria;
@@ -1318,6 +1383,7 @@ abstract class Ship implements ActiveRecordInterface
         $copyObj->setStartx($this->getStartx());
         $copyObj->setStarty($this->getStarty());
         $copyObj->setDirection($this->getDirection());
+        $copyObj->setCoordinates($this->getCoordinates());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1414,6 +1480,7 @@ abstract class Ship implements ActiveRecordInterface
         $this->startx = null;
         $this->starty = null;
         $this->direction = null;
+        $this->coordinates = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

@@ -63,6 +63,7 @@
     <column name="startX" phpName="Startx" type="INTEGER" required="true"/>
     <column name="startY" phpName="Starty" type="INTEGER" required="true"/>
     <column name="direction" phpName="Direction" type="VARCHAR" size="250" required="true" defaultValue=""/>
+    <column name="coordinates" phpName="Coordinates" type="VARCHAR" size="500" required="true" defaultValue=""/>
     <foreign-key foreignTable="fleet" name="ship_ibfk_1" onDelete="CASCADE" onUpdate="CASCADE">
       <reference local="id_fleet" foreign="id"/>
     </foreign-key>
@@ -75,6 +76,7 @@
     <unique name="unique_index_ships">
       <unique-column name="id"/>
       <unique-column name="id_fleet"/>
+      <unique-column name="coordinates"/>
     </unique>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>

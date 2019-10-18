@@ -4,23 +4,6 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ---------------------------------------------------------------------
--- game
--- ---------------------------------------------------------------------
-
-DROP TABLE IF EXISTS `game`;
-
-CREATE TABLE `game`
-(
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `token` VARCHAR(250) DEFAULT '' NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE INDEX `id` (`id`),
-    UNIQUE INDEX `unique_index_games` (`id`, `token`)
-) ENGINE=InnoDB;
-
-ALTER TABLE game ADD `difficulty` VARCHAR(250) DEFAULT '' NOT NULL;
-
--- ---------------------------------------------------------------------
 -- fleet
 -- ---------------------------------------------------------------------
 
@@ -39,6 +22,22 @@ CREATE TABLE `fleet`
         REFERENCES `game` (`id`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- game
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `game`;
+
+CREATE TABLE `game`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `token` VARCHAR(250) DEFAULT '' NOT NULL,
+    `difficulty` VARCHAR(250) DEFAULT '' NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `id` (`id`),
+    UNIQUE INDEX `unique_index_games` (`id`, `token`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -79,9 +78,10 @@ CREATE TABLE `ship`
     `startX` INTEGER NOT NULL,
     `startY` INTEGER NOT NULL,
     `direction` VARCHAR(250) DEFAULT '' NOT NULL,
+    `coordinates` VARCHAR(500) DEFAULT '' NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id` (`id`),
-    UNIQUE INDEX `unique_index_ships` (`id`, `id_fleet`),
+    UNIQUE INDEX `unique_index_ships` (`id`, `id_fleet`, `coordinates`),
     INDEX `id_fleet` (`id_fleet`),
     CONSTRAINT `ship_ibfk_1`
         FOREIGN KEY (`id_fleet`)

@@ -11,8 +11,9 @@
 
 namespace GameEntities;
 
-use PropelModels\Fleet;
 use PropelModels\Ship;
+use Services\AbstractSubject;
+use Services\AbstractObserver;
 
 if(!class_exists('Board'))
 {
@@ -23,11 +24,13 @@ if(!class_exists('Board'))
      * @author G.Maccario <g_maccario@hotmail.com>
      * @return
      */
-    class Board
+    class Board extends AbstractSubject
     {
         private $rows = 9;
         private $columns = 9;
         private $board = [];
+        private $recursions = 0;
+        private $observers = array();
         
         /**
          * @name __construct
@@ -41,6 +44,50 @@ if(!class_exists('Board'))
         }
 
         /**
+         * @name attach - Observer Pattern
+         *
+         * @author G.Maccario <g_maccario@hotmail.com>
+         * @return array
+         */
+        function attach(AbstractObserver $observer_in) 
+        {
+            //could also use array_push($this->observers, $observer_in);
+            $this->observers[] = $observer_in;
+        }
+        
+        /**
+         * @name detach - Observer Pattern
+         *
+         * @author G.Maccario <g_maccario@hotmail.com>
+         * @return array
+         */
+        function detach(AbstractObserver $observer_in) 
+        {
+            //$key = array_search($observer_in, $this->observers);
+            foreach($this->observers as $okey => $oval) 
+            {
+                if ($oval == $observer_in) 
+                {
+                    unset($this->observers[$okey]);
+                }
+            }
+        }
+        
+        /**
+         * @name notify - Observer Pattern
+         *
+         * @author G.Maccario <g_maccario@hotmail.com>
+         * @return array
+         */
+        function notify() 
+        {
+            foreach($this->observers as $obs) 
+            {
+                $obs->update($this);
+            }
+        }
+        
+        /**
          * @name getBoard
          *
          * @author G.Maccario <g_maccario@hotmail.com>
@@ -49,6 +96,17 @@ if(!class_exists('Board'))
         public function getBoard() : array
         {
             return $this->board;
+        }
+        
+        /**
+         * @name getRecursions
+         *
+         * @author G.Maccario <g_maccario@hotmail.com>
+         * @return int
+         */
+        public function getRecursions() : int
+        {
+            return $this->recursions;
         }
         
         /**
@@ -69,65 +127,89 @@ if(!class_exists('Board'))
         }
         
         /**
-         * @name placeShip
+         * @name placeShipOnBoard
          *
          * @author G.Maccario <g_maccario@hotmail.com>
          * @return
          */
-        public function placeShip(Ship $ship)
+        public function placeShipOnBoard(Ship &$ship)
         {
-            $this->board[$ship->getStartX()][$ship->getStartY()] = 1;
-        }
-        
-        /**
-         * @name prepareBoard
-         *
-         * @author G.Maccario <g_maccario@hotmail.com>
-         * @return
-         */
-        public function prepareBoard(Fleet $fleet = null)
-        {
-            if($fleet)
+            // Random direction
+            $directions = array('horizontal', 'vertical');
+            
+            $idRandDirection = array_rand($directions);
+            
+            // Get Boundaries
+            $rws = $this->rows - $ship->getLength();
+            $cls = $this->columns + 1;
+            
+            if($idRandDirection == 'horizontal')
             {
-                $directions = array('horizontal', 'vertical');
-                
-                $arrFleet = $fleet->getFleet();
-                
-                foreach($arrFleet as $ship) 
+                $rws = $this->rows + 1;
+                $cls = $this->columns - $ship->getLength();
+            }
+            
+            // Get All available cells
+            $availableCells = array();
+            for ($row = 0; $row <= $rws; $row++)
+            {
+                for ($column = 0; $column <= $cls; $column++)
                 {
-                    $placingShip = false;
-                    
-                    while(!$placingShip)
+                    if(isset($this->board[$row][$column]))
                     {
-                        $idRandDirection = array_rand($directions);
-                        
-                        if($directions[$idRandDirection] == 'horizontal')
+                        if($this->board[$row][$column] == -1)
                         {
-                            $randX = rand(0, $this->rows);
-                            $randY = rand(0, $this->columns - $ship->getLength());
-                        }
-                        else {
-                            $randX = rand(0, $this->rows - $ship->getLength());
-                            $randY = rand(0, $this->columns);
-                        }
-
-                        if($this->board[$randX][$randY] == -1)
-                        {
-                            $ship->setStartX($randX);
-                            $ship->setStartY($randY);
-                            
-                            $ship->setDirection($directions[$idRandDirection]);
-                            
-                            $this->placeShip($ship);
-                            
-                            $ship->setCoordinates($randX, $randY);
-                            
-                            array_push($this->board, $ship->getCoordinates());
-                            
-                            $placingShip = true;
+                            array_push($availableCells, array($row, $column));
                         }
                     }
                 }
+            }
+            
+            // Get random X/Y from available cells
+            $randomIndex = array_rand($availableCells);
+            $randomCoordinates = $availableCells[$randomIndex];
+            list($randX, $randY) = $randomCoordinates;
+            
+            // Set new Ship attributes
+            $ship->setStartX($randX);
+            $ship->setStartY($randY);
+            $ship->setDirection($directions[$idRandDirection]);
+            $ship->setCoordinatesOnDirection($randX, $randY);
+
+            // Check coordinates: If they are already taken, recursion
+            $allShipCoordinates = $ship->getTmpCoordinates();
+            foreach($allShipCoordinates as $coordinates)
+            {
+                list($x, $y) = $coordinates;
+
+                // Already taken? Recursion
+                if($this->board[$x][$y] != -1)
+                {
+                    // Reset ship coordinates
+                    $ship->resetTmpCoordinates();
+                    
+                    // Increase recursions
+                    $this->recursions += 1;
+                    
+                    // Recursion!
+                    $this->placeShipOnBoard($ship);
+                    
+                    return;
+                }
+            }
+            
+            // Write on log
+            $this->notify(); 
+            
+            // Reset recursions
+            $this->recursions = 0;
+            
+            // Set all the coordinate as taken
+            foreach($allShipCoordinates as $coordinates)
+            {
+                list($x, $y) = $coordinates;
+                
+                $this->board[$x][$y] = 1;
             }
         }
     }

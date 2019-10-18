@@ -51,7 +51,7 @@ if(!class_exists('HitCoordinatesController'))
             
             if(!$gameQuery)
             {
-                return $response->withJson(array('error' => 'Invalid token'), 200);
+                return $response->withJson(array('error' => 'Invalid token'), 401);
             }
             else {
                 
@@ -61,10 +61,17 @@ if(!class_exists('HitCoordinatesController'))
                 $history->setPlayer($player);
                 $history->setX($x);
                 $history->setY($y);
-                $history->save();
+                
+                try{
+                    $history->save();
+                }
+                catch(\Exception $ex) {
+                    throw new \Exception($ex->getCode() . ' ' . $ex->getMessage());
+                }
                 
                 // Check if there is a ship at those coordinates, in the player board
                 $hit = false;
+                $hullHit = 0;
                 $affectedShip = '';
                 $affectedShipId = 0;
                 
@@ -92,18 +99,36 @@ if(!class_exists('HitCoordinatesController'))
                             break;
                         }
                         
-                        // Set all coordinates based on x, y, len and direction
-                        $ship->setCoordinates($ship->getStartx(), $ship->getStarty());
-                        
                         // Otherwise check over all coordinates
-                        $allShipCoordinates = $ship->getCoordinates();
+                        $allShipCoordinates = json_decode($ship->getCoordinates(), true);
                         
-                        $i = 0;
+                        $hullHit = 0;
+                        foreach($allShipCoordinates as $index => $coordinates)
+                        {
+                            if($x == $coordinates[0] && $y == $coordinates[1])
+                            {
+                                $hit = true;
+                                
+                                $hullHit = $index;
+                                
+                                $affectedShip = $ship->getType();
+                                $affectedShipId = $ship->getId();
+                                
+                                break 2; // break both loops
+                            }
+                        }
+                        
+                        $ship->resetTmpCoordinates();
+                        
+                        /*$i = 0;
+                        $hullHit = 0;
                         while ($i < count($allShipCoordinates) - 1)
                         {
                             if($x == $allShipCoordinates[$i][0] && $y == $allShipCoordinates[$i][1])
                             {
                                 $hit = true;
+                                
+                                $hullHit = $i;
                                 
                                 $affectedShip = $ship->getType();
                                 $affectedShipId = $ship->getId();
@@ -114,7 +139,7 @@ if(!class_exists('HitCoordinatesController'))
                             $i++;
                         }
                         
-                        $ship->resetCoordinates();
+                        $ship->resetTmpCoordinates();*/
                     }
     
                     // Return the hit result
@@ -124,6 +149,7 @@ if(!class_exists('HitCoordinatesController'))
                         'hit' => $hit,
                         'ship' => $affectedShip,
                         'shipId' => $affectedShipId,
+                        'hull' => $hullHit,
                         
                     )), 200);
                 }
