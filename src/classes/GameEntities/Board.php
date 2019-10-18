@@ -136,14 +136,14 @@ if(!class_exists('Board'))
         {
             // Random direction
             $directions = array('horizontal', 'vertical');
-            
             $idRandDirection = array_rand($directions);
+            $randDirection = $directions[$idRandDirection];
             
             // Get Boundaries
             $rws = $this->rows - $ship->getLength();
             $cls = $this->columns + 1;
             
-            if($idRandDirection == 'horizontal')
+            if($randDirection == 'horizontal')
             {
                 $rws = $this->rows + 1;
                 $cls = $this->columns - $ship->getLength();
@@ -173,7 +173,7 @@ if(!class_exists('Board'))
             // Set new Ship attributes
             $ship->setStartX($randX);
             $ship->setStartY($randY);
-            $ship->setDirection($directions[$idRandDirection]);
+            $ship->setDirection($randDirection);
             $ship->setCoordinatesOnDirection($randX, $randY);
 
             // Check coordinates: If they are already taken, recursion
