@@ -280,7 +280,7 @@ const Difficulty = Vue.component('difficulty',{
 			
 			this.setAuthCookie();
 			
-			EventBus.$emit('startNewGame');
+			EventBus.$emit('startNewGame', this.difficulty);
 	    },
 	},
 	methods: {
@@ -331,8 +331,10 @@ const vm = new Vue({
 			this.token = token;
 		});
 		
-		EventBus.$on('startNewGame', (token) => {
+		EventBus.$on('startNewGame', (difficulty) => {
 
+			this.difficulty = difficulty;
+			
 			axios.get('/api/new-game/difficulty/' + this.difficulty, {
     			
     			headers: { Authorization: `${this.token}` }

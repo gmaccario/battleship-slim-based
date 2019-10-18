@@ -119,27 +119,6 @@ if(!class_exists('HitCoordinatesController'))
                         }
                         
                         $ship->resetTmpCoordinates();
-                        
-                        /*$i = 0;
-                        $hullHit = 0;
-                        while ($i < count($allShipCoordinates) - 1)
-                        {
-                            if($x == $allShipCoordinates[$i][0] && $y == $allShipCoordinates[$i][1])
-                            {
-                                $hit = true;
-                                
-                                $hullHit = $i;
-                                
-                                $affectedShip = $ship->getType();
-                                $affectedShipId = $ship->getId();
-                                
-                                break 2; // break both loops
-                            }
-                            
-                            $i++;
-                        }
-                        
-                        $ship->resetTmpCoordinates();*/
                     }
     
                     // Return the hit result
