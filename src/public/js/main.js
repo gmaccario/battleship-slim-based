@@ -460,11 +460,11 @@ const Difficulty = Vue.component('difficulty',{
 	props: {
 		cls: String,
 		level: String,
+		label: String,
 	},
 	data(){
 		return {
 			token: '',
-			difficulty: ''
 		}
 	},
 	created() {
@@ -474,23 +474,20 @@ const Difficulty = Vue.component('difficulty',{
 
 	},
 	watch: {
-		difficulty: function (val) {
-			
-			this.getNewToken();
-	    },
+		
 		token: function (val) {
 			
 			this.setAuthCookie();
 			
-			EventBus.$emit('startNewGame', this.difficulty);
+			EventBus.$emit('startNewGame');
 	    },
 	},
 	methods: {
-		chooseLevel(level){
+		chooseLevel(){
 			
-			this.difficulty = level;
+			this.getNewToken();
 			
-			EventBus.$emit('setDifficulty', this.difficulty);
+			EventBus.$emit('setDifficulty', this.label, this.level);
 		},
 		
 		getNewToken()
@@ -511,7 +508,7 @@ const Difficulty = Vue.component('difficulty',{
   		  	document.cookie = `token=${this.token}; max-age=432000;path=/`;
     	},
 	},
-  	template:`<button v-on:click="chooseLevel(level)" type="button" class="btn" :class="cls">{{ level }}</button>`
+  	template:`<button v-on:click="chooseLevel()" type="button" class="btn" :class="cls">{{ label }}</button>`
 });
 
 
@@ -528,7 +525,8 @@ const vm = new Vue({
     	
 		return {
 			token: '',
-			difficulty: null,
+			difficulty: '',
+			difficultyLevel: '',
 			gameStarted: false,
 			gameOver: false,
 			won: false,
@@ -548,16 +546,15 @@ const vm = new Vue({
 			this.token = token;
 		});
 		
-		EventBus.$on('setDifficulty', (difficulty) => {
+		EventBus.$on('setDifficulty', (label, level) => {
 
-			this.difficulty = difficulty;
+			this.difficulty = label;
+			this.difficultyLevel = level;
 		});
 		
-		EventBus.$on('startNewGame', (difficulty) => {
-
-			this.difficulty = difficulty;
+		EventBus.$on('startNewGame', () => {
 			
-			axios.get('/api/new-game/difficulty/' + this.difficulty, {
+			axios.get('/api/new-game/difficulty/' + this.difficultyLevel, {
     			
     			headers: { Authorization: `${this.token}` }
     		

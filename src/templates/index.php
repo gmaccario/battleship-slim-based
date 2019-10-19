@@ -35,11 +35,11 @@
                 	<div class="col">
                 		<div class="levels">
                     		<p>Choose your level</p>
-                    		<difficulty level="be-gentle" cls="btn-primary"></difficulty>
-                    		<difficulty level="too-young-to-die" cls="btn-secondary"></difficulty>
-                    		<difficulty level="warning-zone" cls="btn-warning"></difficulty>
-                    		<difficulty level="danger-zone" cls="btn-danger"></difficulty>
-                    		<difficulty level="ultre-nightmare" cls="btn-dark"></difficulty>
+                    		<difficulty label="be-gentle" level="1" cls="btn-primary"></difficulty>
+                    		<difficulty label="too-young-to-die" level="2" cls="btn-secondary"></difficulty>
+                    		<difficulty label="warning-zone" level="3" cls="btn-warning"></difficulty>
+                    		<difficulty label="danger-zone" level="4" cls="btn-danger"></difficulty>
+                    		<difficulty label="ultre-nightmare" level="5" cls="btn-dark"></difficulty>
                         </div>
                     </div>
                 </div>
@@ -55,35 +55,35 @@
                 <div class="row" v-if="difficulty">
                 	<p>Level</p>
                 	
-                	<div v-if="difficulty == 'be-gentle'" >
+                	<div v-if="difficultyLevel == '1'" >
                         <div class="alert alert-primary" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
                         <countdown :timer=5 :speed=1 v-if="gameStarted"></countdown>
                     </div>
                     
-                    <div v-if="difficulty == 'too-young-to-die'" >
+                    <div v-if="difficultyLevel == '2'" >
     					<div class="alert alert-secondary" v-if="difficulty == 'too-young-to-die'" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
                         <countdown :timer=4 :speed=1 v-if="gameStarted"></countdown>
                     </div>
                     
-                    <div v-if="difficulty == 'warning-zone'" >
+                    <div v-if="difficultyLevel == '3'" >
                         <div class="alert alert-warning" v-if="difficulty == 'warning-zone'" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
                         <countdown :timer=3 :speed=2 v-if="gameStarted"></countdown>
                     </div>
                     
-                    <div v-if="difficulty == 'danger-zone'" >
+                    <div v-if="difficultyLevel == '4'" >
                         <div class="alert alert-danger" v-if="difficulty == 'danger-zone'" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
                         <countdown :timer=2 :speed=3 v-if="gameStarted"></countdown>
                     </div>
                     
-                    <div v-if="difficulty == 'ultre-nightmare'" >
+                    <div v-if="difficultyLevel == '5'" >
                         <div class="alert alert-dark" v-if="difficulty == 'ultre-nightmare'" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
