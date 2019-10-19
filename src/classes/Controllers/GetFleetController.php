@@ -48,7 +48,7 @@ if(!class_exists('GetFleetController'))
             
             if(!$gameQuery)
             {
-                return $response->withJson(array('error' => 'Invalid token'), 200);
+                return $response->withJson(array('error' => 'Invalid token'), 401);
             }
             else {
                 

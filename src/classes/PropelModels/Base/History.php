@@ -98,6 +98,14 @@ abstract class History implements ActiveRecordInterface
     protected $y;
 
     /**
+     * The value for the hit field.
+     *
+     * Note: this column has a database default value of: 0
+     * @var        int
+     */
+    protected $hit;
+
+    /**
      * @var        ChildGame
      */
     protected $aGame;
@@ -119,6 +127,7 @@ abstract class History implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->player = '';
+        $this->hit = 0;
     }
 
     /**
@@ -399,6 +408,16 @@ abstract class History implements ActiveRecordInterface
     }
 
     /**
+     * Get the [hit] column value.
+     *
+     * @return int
+     */
+    public function getHit()
+    {
+        return $this->hit;
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -503,6 +522,26 @@ abstract class History implements ActiveRecordInterface
     } // setY()
 
     /**
+     * Set the value of [hit] column.
+     *
+     * @param int $v new value
+     * @return $this|\PropelModels\History The current object (for fluent API support)
+     */
+    public function setHit($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->hit !== $v) {
+            $this->hit = $v;
+            $this->modifiedColumns[HistoryTableMap::COL_HIT] = true;
+        }
+
+        return $this;
+    } // setHit()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -513,6 +552,10 @@ abstract class History implements ActiveRecordInterface
     public function hasOnlyDefaultValues()
     {
             if ($this->player !== '') {
+                return false;
+            }
+
+            if ($this->hit !== 0) {
                 return false;
             }
 
@@ -556,6 +599,9 @@ abstract class History implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : HistoryTableMap::translateFieldName('Y', TableMap::TYPE_PHPNAME, $indexType)];
             $this->y = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : HistoryTableMap::translateFieldName('Hit', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->hit = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -564,7 +610,7 @@ abstract class History implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = HistoryTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = HistoryTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\PropelModels\\History'), 0, $e);
@@ -796,6 +842,9 @@ abstract class History implements ActiveRecordInterface
         if ($this->isColumnModified(HistoryTableMap::COL_Y)) {
             $modifiedColumns[':p' . $index++]  = 'y';
         }
+        if ($this->isColumnModified(HistoryTableMap::COL_HIT)) {
+            $modifiedColumns[':p' . $index++]  = 'hit';
+        }
 
         $sql = sprintf(
             'INSERT INTO history (%s) VALUES (%s)',
@@ -821,6 +870,9 @@ abstract class History implements ActiveRecordInterface
                         break;
                     case 'y':
                         $stmt->bindValue($identifier, $this->y, PDO::PARAM_INT);
+                        break;
+                    case 'hit':
+                        $stmt->bindValue($identifier, $this->hit, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -899,6 +951,9 @@ abstract class History implements ActiveRecordInterface
             case 4:
                 return $this->getY();
                 break;
+            case 5:
+                return $this->getHit();
+                break;
             default:
                 return null;
                 break;
@@ -934,6 +989,7 @@ abstract class History implements ActiveRecordInterface
             $keys[2] => $this->getPlayer(),
             $keys[3] => $this->getX(),
             $keys[4] => $this->getY(),
+            $keys[5] => $this->getHit(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1005,6 +1061,9 @@ abstract class History implements ActiveRecordInterface
             case 4:
                 $this->setY($value);
                 break;
+            case 5:
+                $this->setHit($value);
+                break;
         } // switch()
 
         return $this;
@@ -1045,6 +1104,9 @@ abstract class History implements ActiveRecordInterface
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setY($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setHit($arr[$keys[5]]);
         }
     }
 
@@ -1101,6 +1163,9 @@ abstract class History implements ActiveRecordInterface
         }
         if ($this->isColumnModified(HistoryTableMap::COL_Y)) {
             $criteria->add(HistoryTableMap::COL_Y, $this->y);
+        }
+        if ($this->isColumnModified(HistoryTableMap::COL_HIT)) {
+            $criteria->add(HistoryTableMap::COL_HIT, $this->hit);
         }
 
         return $criteria;
@@ -1192,6 +1257,7 @@ abstract class History implements ActiveRecordInterface
         $copyObj->setPlayer($this->getPlayer());
         $copyObj->setX($this->getX());
         $copyObj->setY($this->getY());
+        $copyObj->setHit($this->getHit());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1286,6 +1352,7 @@ abstract class History implements ActiveRecordInterface
         $this->player = null;
         $this->x = null;
         $this->y = null;
+        $this->hit = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

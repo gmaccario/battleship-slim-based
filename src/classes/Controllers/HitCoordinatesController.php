@@ -17,6 +17,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use PropelModels\GameQuery;
 use PropelModels\FleetQuery;
 use PropelModels\History;
+use Services\MonologHistoryObserver;
 
 if(!class_exists('HitCoordinatesController'))
 {
@@ -51,20 +52,13 @@ if(!class_exists('HitCoordinatesController'))
             
             if(!$gameQuery)
             {
-                return $response->withJson(array('error' => 'Invalid token'), 200);
+                return $response->withJson(array('error' => 'Invalid token'), 401);
             }
             else {
-                
-                // Save on history
-                $history = new History();
-                $history->setIdGame($gameQuery->getId());
-                $history->setPlayer($player);
-                $history->setX($x);
-                $history->setY($y);
-                $history->save();
-                
+
                 // Check if there is a ship at those coordinates, in the player board
                 $hit = false;
+                $hullHit = 0;
                 $affectedShip = '';
                 $affectedShipId = 0;
                 
@@ -92,38 +86,57 @@ if(!class_exists('HitCoordinatesController'))
                             break;
                         }
                         
-                        // Set all coordinates based on x, y, len and direction
-                        $ship->setCoordinates($ship->getStartx(), $ship->getStarty());
-                        
                         // Otherwise check over all coordinates
-                        $allShipCoordinates = $ship->getCoordinates();
+                        $allShipCoordinates = json_decode($ship->getCoordinates(), true);
                         
-                        $i = 0;
-                        while ($i < count($allShipCoordinates) - 1)
+                        $hullHit = 0;
+                        foreach($allShipCoordinates as $index => $coordinates)
                         {
-                            if($x == $allShipCoordinates[$i][0] && $y == $allShipCoordinates[$i][1])
+                            if($x == $coordinates[0] && $y == $coordinates[1])
                             {
                                 $hit = true;
+                                
+                                $hullHit = $index;
                                 
                                 $affectedShip = $ship->getType();
                                 $affectedShipId = $ship->getId();
                                 
                                 break 2; // break both loops
                             }
-                            
-                            $i++;
                         }
                         
-                        $ship->resetCoordinates();
+                        $ship->resetTmpCoordinates();
                     }
     
+                    // Observer
+                    //$observer = new MonologHistoryObserver();
+                    
+                    // Save on history
+                    $history = new History();
+                    $history->setIdGame($gameQuery->getId());
+                    $history->setPlayer($player);
+                    $history->setX($x);
+                    $history->setY($y);
+                    $history->setHit($hit);
+                    //$history->attach($observer);
+                    
+                    try{
+                        $history->save();
+                    }
+                    catch(\Exception $ex) {
+                        // Save on logs
+                        //$history->notify();
+                    }
+                    
                     // Return the hit result
                     return $response->withJson(array('results' => array(
-                        'x' => $x,
-                        'y' => $y,
+                        'x' => intval($x),
+                        'y' => intval($y),
                         'hit' => $hit,
                         'ship' => $affectedShip,
                         'shipId' => $affectedShipId,
+                        'hull' => $hullHit,
+                        'action' => 'hitCoordinates',
                         
                     )), 200);
                 }

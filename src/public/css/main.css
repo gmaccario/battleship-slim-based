@@ -1,1 +1,27 @@
-a,h1,h2,h3,h4,h5,h6,p,span{font-family:Roboto,sans-serif;color:#04595e}table{border:1px solid silver;border-collapse:collapse}table tr td{border:1px solid silver;padding:.5em}table span{font-size:.9em}footer{border-top:1px solid #04595e;margin-top:1em}footer span{float:right;font-size:.8em}.water{background-color:#0ff}.bomb{background-color:red}.btn-primary span{color:#fff}.fleet .ship{height:25px;margin-bottom:.3em;width:30%;float:left}.fleet .ship .ship-hull{height:20px;width:20px;float:left;border:1px solid #04595e;background-color:silver}.fleet .ship .ship-hull.hit{background-color:red}.fleet-solutions{clear:both;display:block}.game-over{display:none;border:1px solid #04595e;position:absolute;top:50%;left:50%;width:400px;height:200px;margin-left:-200px;margin-top:-200px;text-align:center;padding:3em;background-color:red;z-index:999}.game-over.player1{background-color:green}.game-over a,.game-over span{color:#fff}.game-over .message{display:none}.table-content { width: 20px; }.board.player2 .fa-align-justify:hover{ cursor: pointer; }.game{ display: none; }.board .col-0,.board .col-1,.board .col-2,.board .col-3,.board .col-4,.board .col-5,.board .col-6,.board .col-7,.board .col-8,.board .col-9{ width: auto!important; }
+a,h1,h2,h3,h4,h5,h6,p,span{font-family:Roboto,sans-serif;color:#04595e}table{border:1px solid silver;border-collapse:collapse}table tr td{border:1px solid silver;padding:.5em}table span{font-size:.9em}footer{border-top:1px solid #04595e;margin-top:1em}footer span{float:right;font-size:.8em}.water{background-color:#0ff}.bomb{background-color:red}.btn-primary span{color:#fff}.fleet .ship{height:25px;margin-bottom:.3em;width:30%;float:left}
+
+
+
+
+.fleet .ship .ship-hull{height:20px;width:20px;float:left;border:1px solid #04595e;background-color:silver}
+.fleet .ship .ship-hull.hit{background-color:red}
+
+
+.fleet-solutions{clear:both;display:block}.game-over{display:none;border:1px solid #04595e;position:absolute;top:50%;left:50%;width:400px;height:200px;margin-left:-200px;margin-top:-200px;text-align:center;padding:3em;background-color:red;z-index:999}.game-over.player1{background-color:green}.game-over a,.game-over span{color:#ffffff}.game-over .message{display:none}.table-content { width: 20px; }.board.player2 .fa-align-justify:hover{ cursor: pointer; }
+
+
+
+.countdown-block {
+    float: left;
+    flex-direction: column;
+    margin: 20px;
+}
+
+.countdown-block .text {
+    /*color: #1abc9c;*/
+    text-align: center;
+}
+
+.countdown-block .digit {
+    text-align: center;
+}

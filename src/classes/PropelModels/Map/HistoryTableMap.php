@@ -59,7 +59,7 @@ class HistoryTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 5;
+    const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class HistoryTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 5;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /**
      * the column name for the id field
@@ -97,6 +97,11 @@ class HistoryTableMap extends TableMap
     const COL_Y = 'history.y';
 
     /**
+     * the column name for the hit field
+     */
+    const COL_HIT = 'history.hit';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -108,11 +113,11 @@ class HistoryTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'IdGame', 'Player', 'X', 'Y', ),
-        self::TYPE_CAMELNAME     => array('id', 'idGame', 'player', 'x', 'y', ),
-        self::TYPE_COLNAME       => array(HistoryTableMap::COL_ID, HistoryTableMap::COL_ID_GAME, HistoryTableMap::COL_PLAYER, HistoryTableMap::COL_X, HistoryTableMap::COL_Y, ),
-        self::TYPE_FIELDNAME     => array('id', 'id_game', 'player', 'x', 'y', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id', 'IdGame', 'Player', 'X', 'Y', 'Hit', ),
+        self::TYPE_CAMELNAME     => array('id', 'idGame', 'player', 'x', 'y', 'hit', ),
+        self::TYPE_COLNAME       => array(HistoryTableMap::COL_ID, HistoryTableMap::COL_ID_GAME, HistoryTableMap::COL_PLAYER, HistoryTableMap::COL_X, HistoryTableMap::COL_Y, HistoryTableMap::COL_HIT, ),
+        self::TYPE_FIELDNAME     => array('id', 'id_game', 'player', 'x', 'y', 'hit', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -122,11 +127,11 @@ class HistoryTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'IdGame' => 1, 'Player' => 2, 'X' => 3, 'Y' => 4, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'idGame' => 1, 'player' => 2, 'x' => 3, 'y' => 4, ),
-        self::TYPE_COLNAME       => array(HistoryTableMap::COL_ID => 0, HistoryTableMap::COL_ID_GAME => 1, HistoryTableMap::COL_PLAYER => 2, HistoryTableMap::COL_X => 3, HistoryTableMap::COL_Y => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'id_game' => 1, 'player' => 2, 'x' => 3, 'y' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'IdGame' => 1, 'Player' => 2, 'X' => 3, 'Y' => 4, 'Hit' => 5, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'idGame' => 1, 'player' => 2, 'x' => 3, 'y' => 4, 'hit' => 5, ),
+        self::TYPE_COLNAME       => array(HistoryTableMap::COL_ID => 0, HistoryTableMap::COL_ID_GAME => 1, HistoryTableMap::COL_PLAYER => 2, HistoryTableMap::COL_X => 3, HistoryTableMap::COL_Y => 4, HistoryTableMap::COL_HIT => 5, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'id_game' => 1, 'player' => 2, 'x' => 3, 'y' => 4, 'hit' => 5, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -151,6 +156,7 @@ class HistoryTableMap extends TableMap
         $this->addColumn('player', 'Player', 'VARCHAR', true, 250, '');
         $this->addColumn('x', 'X', 'INTEGER', true, null, null);
         $this->addColumn('y', 'Y', 'INTEGER', true, null, null);
+        $this->addColumn('hit', 'Hit', 'INTEGER', true, null, 0);
     } // initialize()
 
     /**
@@ -313,12 +319,14 @@ class HistoryTableMap extends TableMap
             $criteria->addSelectColumn(HistoryTableMap::COL_PLAYER);
             $criteria->addSelectColumn(HistoryTableMap::COL_X);
             $criteria->addSelectColumn(HistoryTableMap::COL_Y);
+            $criteria->addSelectColumn(HistoryTableMap::COL_HIT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.id_game');
             $criteria->addSelectColumn($alias . '.player');
             $criteria->addSelectColumn($alias . '.x');
             $criteria->addSelectColumn($alias . '.y');
+            $criteria->addSelectColumn($alias . '.hit');
         }
     }
 

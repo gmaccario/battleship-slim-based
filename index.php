@@ -16,6 +16,7 @@ use Controllers\TokenController;
 use Controllers\HitCoordinatesController;
 use Controllers\NewGameController;
 use Controllers\GetFleetController;
+use Controllers\FightBackController;
 
 // PSR-4: Autoloader - PHP-FIG
 require __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -36,6 +37,7 @@ $app->get('/api/token', TokenController::class)->setName('getToken'); // Get new
 $app->get('/api/new-game[/difficulty/{difficulty}]', NewGameController::class)->setName('setupNewGame'); // Setup new Game
 $app->get('/api/get-fleet/{player}', GetFleetController::class)->setName('getFleetXPlayer'); // Get a list of ships per player
 $app->get('/api/hit-coordinates/{player}/{x}/{y}', HitCoordinatesController::class)->setName('hitCoords'); // Hit coordinates
+$app->get('/api/fight-back/{player}', FightBackController::class)->setName('fightBack'); // Fight Back
 
 // Run Slim Engine
 $app->run();

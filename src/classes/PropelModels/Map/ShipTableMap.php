@@ -59,7 +59,7 @@ class ShipTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ShipTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the id field
@@ -107,6 +107,11 @@ class ShipTableMap extends TableMap
     const COL_DIRECTION = 'ship.direction';
 
     /**
+     * the column name for the coordinates field
+     */
+    const COL_COORDINATES = 'ship.coordinates';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -118,11 +123,11 @@ class ShipTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'IdFleet', 'Type', 'Length', 'Startx', 'Starty', 'Direction', ),
-        self::TYPE_CAMELNAME     => array('id', 'idFleet', 'type', 'length', 'startx', 'starty', 'direction', ),
-        self::TYPE_COLNAME       => array(ShipTableMap::COL_ID, ShipTableMap::COL_ID_FLEET, ShipTableMap::COL_TYPE, ShipTableMap::COL_LENGTH, ShipTableMap::COL_STARTX, ShipTableMap::COL_STARTY, ShipTableMap::COL_DIRECTION, ),
-        self::TYPE_FIELDNAME     => array('id', 'id_fleet', 'type', 'length', 'startX', 'startY', 'direction', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id', 'IdFleet', 'Type', 'Length', 'Startx', 'Starty', 'Direction', 'Coordinates', ),
+        self::TYPE_CAMELNAME     => array('id', 'idFleet', 'type', 'length', 'startx', 'starty', 'direction', 'coordinates', ),
+        self::TYPE_COLNAME       => array(ShipTableMap::COL_ID, ShipTableMap::COL_ID_FLEET, ShipTableMap::COL_TYPE, ShipTableMap::COL_LENGTH, ShipTableMap::COL_STARTX, ShipTableMap::COL_STARTY, ShipTableMap::COL_DIRECTION, ShipTableMap::COL_COORDINATES, ),
+        self::TYPE_FIELDNAME     => array('id', 'id_fleet', 'type', 'length', 'startX', 'startY', 'direction', 'coordinates', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -132,11 +137,11 @@ class ShipTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'IdFleet' => 1, 'Type' => 2, 'Length' => 3, 'Startx' => 4, 'Starty' => 5, 'Direction' => 6, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'idFleet' => 1, 'type' => 2, 'length' => 3, 'startx' => 4, 'starty' => 5, 'direction' => 6, ),
-        self::TYPE_COLNAME       => array(ShipTableMap::COL_ID => 0, ShipTableMap::COL_ID_FLEET => 1, ShipTableMap::COL_TYPE => 2, ShipTableMap::COL_LENGTH => 3, ShipTableMap::COL_STARTX => 4, ShipTableMap::COL_STARTY => 5, ShipTableMap::COL_DIRECTION => 6, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'id_fleet' => 1, 'type' => 2, 'length' => 3, 'startX' => 4, 'startY' => 5, 'direction' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'IdFleet' => 1, 'Type' => 2, 'Length' => 3, 'Startx' => 4, 'Starty' => 5, 'Direction' => 6, 'Coordinates' => 7, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'idFleet' => 1, 'type' => 2, 'length' => 3, 'startx' => 4, 'starty' => 5, 'direction' => 6, 'coordinates' => 7, ),
+        self::TYPE_COLNAME       => array(ShipTableMap::COL_ID => 0, ShipTableMap::COL_ID_FLEET => 1, ShipTableMap::COL_TYPE => 2, ShipTableMap::COL_LENGTH => 3, ShipTableMap::COL_STARTX => 4, ShipTableMap::COL_STARTY => 5, ShipTableMap::COL_DIRECTION => 6, ShipTableMap::COL_COORDINATES => 7, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'id_fleet' => 1, 'type' => 2, 'length' => 3, 'startX' => 4, 'startY' => 5, 'direction' => 6, 'coordinates' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -163,6 +168,7 @@ class ShipTableMap extends TableMap
         $this->addColumn('startX', 'Startx', 'INTEGER', true, null, null);
         $this->addColumn('startY', 'Starty', 'INTEGER', true, null, null);
         $this->addColumn('direction', 'Direction', 'VARCHAR', true, 250, '');
+        $this->addColumn('coordinates', 'Coordinates', 'VARCHAR', true, 500, '');
     } // initialize()
 
     /**
@@ -327,6 +333,7 @@ class ShipTableMap extends TableMap
             $criteria->addSelectColumn(ShipTableMap::COL_STARTX);
             $criteria->addSelectColumn(ShipTableMap::COL_STARTY);
             $criteria->addSelectColumn(ShipTableMap::COL_DIRECTION);
+            $criteria->addSelectColumn(ShipTableMap::COL_COORDINATES);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.id_fleet');
@@ -335,6 +342,7 @@ class ShipTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.startX');
             $criteria->addSelectColumn($alias . '.startY');
             $criteria->addSelectColumn($alias . '.direction');
+            $criteria->addSelectColumn($alias . '.coordinates');
         }
     }
 

@@ -13,10 +13,11 @@ namespace Controllers;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-use PropelModels\Game;
 use GameEntities\Board;
+use PropelModels\Game;
 use PropelModels\Fleet;
 use PropelModels\Ship;
+use Services\MonologBoardObserver;
 
 if(!class_exists('NewGameController'))
 {
@@ -46,19 +47,28 @@ if(!class_exists('NewGameController'))
             // Get token from header
             $token = $request->getHeaderLine('Authorization');
             
-            if($token)
+            if(!$token)
             {
+                // 200 OK
+                return $response->withJson(array('error' => 'Invalid token'), 401);
+            }
+            else {
                 // New Game
                 $game = new Game();
                 $game->setToken($token);
                 $game->setDifficulty($difficulty);
                 $game->save();
                 
+                // Prepare board for each players
                 foreach($this->players as $player)
                 {
+                    // Observer
+                    $observer = new MonologBoardObserver();
+                    
                     // Board
                     $board = new Board();
                     $board->createBoard();
+                    $board->attach($observer);
                     
                     // Fleet
                     $fleet = new Fleet();
@@ -67,29 +77,38 @@ if(!class_exists('NewGameController'))
                     $fleet->prepareFleet();
                     $fleet->save();
                     
-                    // Positioning ships on the board
-                    $board->prepareBoard($fleet);
-                    
+                    // Ships
+                    $ships = $fleet->getFleet();
+
                     // Save ships on db
-                    foreach($fleet->getFleet() as $FleetShip)
+                    foreach($ships as $shipInFleet)
                     {
+                        // Positioning ships on the board
+                        $board->placeShipOnBoard($shipInFleet);
+
+                        // Create new ship and save
                         $ship = new Ship();
                         $ship->setIdFleet($fleet->getId());
-                        $ship->setType($FleetShip->getType());
-                        $ship->setLength($FleetShip->getLength());
-                        $ship->setStartx($FleetShip->getStartx());
-                        $ship->setStarty($FleetShip->getStarty());
-                        $ship->setDirection($FleetShip->getDirection());
-                        $ship->save();
+                        $ship->setType($shipInFleet->getType());
+                        $ship->setLength($shipInFleet->getLength());
+                        $ship->setStartx($shipInFleet->getStartx());
+                        $ship->setStarty($shipInFleet->getStarty());
+                        $ship->setDirection($shipInFleet->getDirection());
+                        $ship->setCoordinates(json_encode($shipInFleet->getTmpCoordinates()));
+
+                        // Save new ship
+                        try{
+                            $ship->save();
+                        }
+                        catch(\Exception $ex) {
+                            throw new \Exception($ex->getCode() . ' ' . $ex->getMessage());
+                        }
                     }
                 }
                 
                 // 201 Created
                 return $response->withJson(array('results' => $token), 201);
             }
-            
-            // 200 OK
-            return $response->withJson(array('results' => $token), 200);
         }
     }
 } 
