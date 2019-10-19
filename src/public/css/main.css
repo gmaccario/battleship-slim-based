@@ -8,3 +8,20 @@ a,h1,h2,h3,h4,h5,h6,p,span{font-family:Roboto,sans-serif;color:#04595e}table{bor
 
 
 .fleet-solutions{clear:both;display:block}.game-over{display:none;border:1px solid #04595e;position:absolute;top:50%;left:50%;width:400px;height:200px;margin-left:-200px;margin-top:-200px;text-align:center;padding:3em;background-color:red;z-index:999}.game-over.player1{background-color:green}.game-over a,.game-over span{color:#ffffff}.game-over .message{display:none}.table-content { width: 20px; }.board.player2 .fa-align-justify:hover{ cursor: pointer; }
+
+
+
+.countdown-block {
+    float: left;
+    flex-direction: column;
+    margin: 20px;
+}
+
+.countdown-block .text {
+    /*color: #1abc9c;*/
+    text-align: center;
+}
+
+.countdown-block .digit {
+    text-align: center;
+}

@@ -30,7 +30,7 @@
             </div>
             
             <div id="app" class="container-fluid">
-                <div class="row">
+                <div class="row" v-if="!gameStarted">
                 	<div class="col">
                 		<div class="levels">
                     		<p>Choose your level</p>
@@ -43,18 +43,63 @@
                     </div>
                 </div>
                 <div class="row" v-if="gameOver">
-                	<p>Game Over!</p>
+                	<div class="alert alert-success" role="alert" v-if="won == 1">
+						<p>You win!</p>
+                    </div>
+                    <div class="alert alert-danger" role="alert" v-else>
+						<p>Game over</p>
+                    </div>
                 </div>
+                
+                <div class="row" v-if="difficulty">
+                	<p>Level</p>
+                	
+                	<div v-if="difficulty == 'be-gentle'" >
+                        <div class="alert alert-primary" role="alert">
+                        	<span>{{ difficulty }}</span>
+                        </div>
+                        <countdown :timer=5 v-if="gameStarted"></countdown>
+                    </div>
+                    
+                    <div v-if="difficulty == 'too-young-to-die'" >
+    					<div class="alert alert-secondary" v-if="difficulty == 'too-young-to-die'" role="alert">
+                        	<span>{{ difficulty }}</span>
+                        </div>
+                        <countdown :timer=4 v-if="gameStarted"></countdown>
+                    </div>
+                    
+                    <div v-if="difficulty == 'warning-zone'" >
+                        <div class="alert alert-warning" v-if="difficulty == 'warning-zone'" role="alert">
+                        	<span>{{ difficulty }}</span>
+                        </div>
+                        <countdown :timer=3 v-if="gameStarted"></countdown>
+                    </div>
+                    
+                    <div v-if="difficulty == 'danger-zone'" >
+                        <div class="alert alert-danger" v-if="difficulty == 'danger-zone'" role="alert">
+                        	<span>{{ difficulty }}</span>
+                        </div>
+                        <countdown :timer=2 v-if="gameStarted"></countdown>
+                    </div>
+                    
+                    <div v-if="difficulty == 'ultre-nightmare'" >
+                        <div class="alert alert-dark" v-if="difficulty == 'ultre-nightmare'" role="alert">
+                        	<span>{{ difficulty }}</span>
+                        </div>
+                        <countdown :timer=1 v-if="gameStarted"></countdown>
+                    </div>
+                </div>
+                
                 <div class="row" v-if="token">
 					<div class="col">
 						<div id="player1">
-                			<board player=1 :token="token" :gameOver="gameOver"></board>
+                			<board player=1 :token="token" :game-over="gameOver"></board>
                 			<fleet player=1 :token="token" :game-started="gameStarted"></fleet>
                 		</div>
                 	</div>
 					<div class="col">
                 		<div id="player2">
-                			<board player=2 :token="token" :gameOver="gameOver"></board>
+                			<board player=2 :token="token" :game-over="gameOver"></board>
                 			<fleet player=2 :token="token" :game-started="gameStarted"></fleet>
                 		</div>
                     </div>

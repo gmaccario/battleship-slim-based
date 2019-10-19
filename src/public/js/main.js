@@ -12,6 +12,7 @@ const Cell = Vue.component('cell',{
 		row: Number,
 		player: String,
 		token: String,
+		gameOver: Boolean,
 	},
 	data(){
 		return {
@@ -21,6 +22,7 @@ const Cell = Vue.component('cell',{
 		}
 	},
 	created() {
+		
 		this.currentPlayer = this.player;
 	},
 	mounted() {
@@ -33,36 +35,41 @@ const Cell = Vue.component('cell',{
 
 		hitCoordinates(row, col) {
 			
-			// Prevent click on already attacked cells and on player 1 board
-			if(!this.attacked && this.currentPlayer == 2)
+			console.log("CLICK ON GAME OVER", this.gameOver);
+			
+			if(!this.gameOver)
 			{
-				axios.get('/api/hit-coordinates/player' + this.currentPlayer + '/' + this.row + '/' + this.col, {
-	    			
-	    			headers: { Authorization: `${this.token}` }
-	    		
-				}).then((response) => {
-
-					// console.log('hitCoordinates', response.data.results);
-					
-					if(!response.data.results.hit)
-					{
-						this.attacked = true;
-					}
-					else {
+				// Prevent click on already attacked cells and on player 1 board
+				if(!this.attacked && this.currentPlayer == 2)
+				{
+					axios.get('/api/hit-coordinates/player' + this.currentPlayer + '/' + this.row + '/' + this.col, {
+		    			
+		    			headers: { Authorization: `${this.token}` }
+		    		
+					}).then((response) => {
+	
+						// console.log('hitCoordinates', response.data.results);
 						
-						this.hit = true;
-						this.attacked = true;
+						if(!response.data.results.hit)
+						{
+							this.attacked = true;
+						}
+						else {
+							
+							this.hit = true;
+							this.attacked = true;
+							
+							this.$root.$emit('hitShip', this.player, response.data.results.shipId, response.data.results.hull);
+						}
+	
+						console.log("CURREENT PLAYA:", this.currentPlayer);
 						
-						this.$root.$emit('hitShip', this.player, response.data.results.shipId, response.data.results.hull);
-					}
-
-					console.log("CURREENT PLAYA:", this.currentPlayer);
-					
-					//this.currentPlayer == 1;
-					
-					// Fight Back
-					EventBus.$emit('fightBack', 1);
-				});	
+						//this.currentPlayer == 1;
+						
+						// Fight Back
+						EventBus.$emit('fightBack', 1);
+					});	
+				}
 			}
 		},
 		
@@ -95,11 +102,90 @@ const Cell = Vue.component('cell',{
 		},
 	},
   	template:`<div @click="hitCoordinates((row - 1), (col - 1));">
-        		<i v-if="!attacked && !hit" class="fas fa-align-justify"></i>
-        		<i v-if="attacked && hit" class="fas fa-bomb"></i>
-        		<i v-if="attacked && !hit" class="fas fa-water"></i>
+        		<i v-if="!attacked && !hit && !gameOver" class="fas fa-align-justify"></i>
+        		<i v-if="attacked && hit && !gameOver" class="fas fa-bomb"></i>
+        		<i v-if="attacked && !hit && !gameOver" class="fas fa-water"></i>
+        		<i v-if="gameOver" class="fas fa-ban"></i>
         	</div>`
 });
+
+// Countdown Component
+const Countdown = Vue.component('countdown',{
+	components: {
+		
+	},
+	props: {
+		timer: Number,
+	},
+	data(){
+		return {
+			minutes: 0,
+			seconds: 0,
+			innerSetInterval: null,
+		}
+	},
+	created() {
+		
+		this.setTimer();
+		this.decreaseTimer();
+	},
+	mounted() {
+		
+	},
+	watch: {
+		
+	},
+	methods: {
+		
+		setTimer() {
+			this.minutes = this.timer;
+			this.seconds = 0;
+		},
+		
+		decreaseTimer() {
+			
+			this.innerSetInterval = window.setInterval(() => {
+		        
+		        if(this.minutes == 0 && this.seconds == 0)
+		        {
+		        	clearInterval(this.innerSetInterval);
+		        	
+		        	// @todo 
+					console.log("GAME OVER Timer");
+					
+					EventBus.$emit('gameOver');
+					
+					return;
+		        }
+		        
+		        if(this.seconds > 0)
+		        {
+		        	this.seconds = this.seconds - 1;
+		        } 
+		        else {
+		        	
+		        	this.seconds = 59;
+		        	
+		        	if(this.minutes > 0)
+		        	{
+		        		this.minutes = this.minutes - 1;
+		        	}
+		        }
+		    }, 250);
+		},
+	},
+  	template:`<div>
+	    <div class="countdown-block">
+	        <p class="digit">{{ minutes }}</p>
+	        <p class="text">Minutes</p>
+	    </div>
+	    <div class="countdown-block">
+	        <p class="digit">{{ seconds }}</p>
+	        <p class="text">Seconds</p>
+	    </div>
+	</div>`
+});
+
 
 // Hull Component
 const Hull = Vue.component('hull',{
@@ -119,6 +205,7 @@ const Hull = Vue.component('hull',{
 		
 	},
 	mounted() {
+		
 		this.$root.$on('hitHull', (player, shipId, hullId) => {
 
 			if(shipId == this.ship.id && hullId == this.id) 
@@ -273,6 +360,7 @@ const Board = Vue.component('board',{
 	props: {
 		player: String,
 		token: String,
+		gameOver: Boolean,
 	},
 	data(){
 		return {
@@ -348,7 +436,7 @@ const Board = Vue.component('board',{
 		        	<td class="board-row-header" :class="'board-row-header-' + (row - 1)">{{ alphabet[row - 1].toUpperCase() }}</td>
 		        	
 		        	<td v-for="col in cols" class="board-cell" :class="'board-cell-row-' + (row - 1) + ' board-cell-col-' + (col - 1)">
-	        			<cell :token="token" :player="player" :cols="cols" :col="col - 1" :row="row - 1" :key="'cell-ref-' + player + '-' + (row - 1) + '-' + (col - 1)" :ref="'cell-ref-' + player + '-' + (row - 1) + '-' + (col - 1)"></cell>
+	        			<cell :token="token" :player="player" :cols="cols" :col="col - 1" :row="row - 1" :game-over="gameOver" :key="'cell-ref-' + player + '-' + (row - 1) + '-' + (col - 1)" :ref="'cell-ref-' + player + '-' + (row - 1) + '-' + (col - 1)"></cell>
 	        		</td>
 		        </tr>
 		    </tbody>
@@ -401,7 +489,10 @@ const Difficulty = Vue.component('difficulty',{
 		chooseLevel(level){
 			
 			this.difficulty = level;
+			
+			EventBus.$emit('setDifficulty', this.difficulty);
 		},
+		
 		getNewToken()
     	{
     		axios.get('/api/token', {
@@ -431,13 +522,16 @@ const vm = new Vue({
         'board': Board,
         'fleet': Fleet,
         'difficulty': Difficulty,
+        'countdown': Countdown,
     },
     data(){
     	
 		return {
 			token: '',
+			difficulty: null,
 			gameStarted: false,
 			gameOver: false,
+			won: false,
 		}
 	},
     created() {
@@ -452,6 +546,11 @@ const vm = new Vue({
 		EventBus.$on('setToken', (token) => {
 
 			this.token = token;
+		});
+		
+		EventBus.$on('setDifficulty', (difficulty) => {
+
+			this.difficulty = difficulty;
 		});
 		
 		EventBus.$on('startNewGame', (difficulty) => {
@@ -470,9 +569,12 @@ const vm = new Vue({
 			});
 		});
 		
-		EventBus.$on('gameOver', (player) => {
+		EventBus.$on('gameOver', (player = null) => {
 
-			alert("GAME OVER");
+			if(player)
+			{
+				this.won = ((player.toString() === '2') ? '1' : player.toString());	
+			}
 			
 			this.gameOver = true;
 		});
