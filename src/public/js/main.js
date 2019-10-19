@@ -216,7 +216,9 @@ const Fleet = Vue.component('fleet',{
 				if(this.shipsHullsTotal[player].toString() == '0')
 				{
 					// @todo 
-					alert("GAME OVER");
+					console.log("GAME OVER");
+					
+					EventBus.$emit('gameOver', player);
 				}	
 			}
 		});
@@ -353,7 +355,9 @@ const Board = Vue.component('board',{
 		    <tfoot>
 		    	<tr class="board-row-footer">
 		        	<td class="board-empty"><span>&nbsp;</span></td>
-  					<td v-for="col in cols" class="board-col" :class="'board-col' + (col - 1)">{{ (col - 1) }}</td>
+  					<td v-for="col in cols" class="board-col" :class="'board-col' + (col - 1)">
+  						{{ col }}
+  					</td>
 		        </tr>
 		    </tfoot>
 		  </table>
@@ -432,8 +436,8 @@ const vm = new Vue({
     	
 		return {
 			token: '',
-			//player: 2,
 			gameStarted: false,
+			gameOver: false,
 		}
 	},
     created() {
@@ -464,6 +468,13 @@ const vm = new Vue({
 				
 				console.log("Game started!");
 			});
+		});
+		
+		EventBus.$on('gameOver', (player) => {
+
+			alert("GAME OVER");
+			
+			this.gameOver = true;
 		});
 	},
 	mounted() {

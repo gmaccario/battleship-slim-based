@@ -42,16 +42,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="row" v-if="gameOver">
+                	<p>Game Over!</p>
+                </div>
                 <div class="row" v-if="token">
 					<div class="col">
 						<div id="player1">
-                			<board player=1 :token="token"></board>
+                			<board player=1 :token="token" :gameOver="gameOver"></board>
                 			<fleet player=1 :token="token" :game-started="gameStarted"></fleet>
                 		</div>
                 	</div>
 					<div class="col">
                 		<div id="player2">
-                			<board player=2 :token="token"></board>
+                			<board player=2 :token="token" :gameOver="gameOver"></board>
                 			<fleet player=2 :token="token" :game-started="gameStarted"></fleet>
                 		</div>
                     </div>
