@@ -33,6 +33,7 @@ const Cell = Vue.component('cell',{
 
 		hitCoordinates(row, col) {
 			
+			// Prevent click on already attacked cells and on player 1 board
 			if(!this.attacked && this.currentPlayer == 2)
 			{
 				axios.get('/api/hit-coordinates/player' + this.currentPlayer + '/' + this.row + '/' + this.col, {

@@ -16,5 +16,5 @@ use PropelModels\Base\History as BaseHistory;
  */
 class History extends BaseHistory
 {
-
+    
 }

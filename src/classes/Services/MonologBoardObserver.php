@@ -4,20 +4,19 @@ namespace Services;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-
+/*
 abstract class AbstractObserver 
 {
     abstract function update(AbstractSubject $subject_in);
 }
-
 abstract class AbstractSubject 
 {
     abstract function attach(AbstractObserver $observer_in);
     abstract function detach(AbstractObserver $observer_in);
     abstract function notify();
 }
-
-class MonologObserver extends AbstractObserver 
+*/
+class MonologBoardObserver extends AbstractObserver 
 {
     public function __construct() 
     {

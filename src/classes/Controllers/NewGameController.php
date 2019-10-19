@@ -13,11 +13,11 @@ namespace Controllers;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-use PropelModels\Game;
 use GameEntities\Board;
+use PropelModels\Game;
 use PropelModels\Fleet;
 use PropelModels\Ship;
-use Services\MonologObserver;
+use Services\MonologBoardObserver;
 
 if(!class_exists('NewGameController'))
 {
@@ -63,7 +63,7 @@ if(!class_exists('NewGameController'))
                 foreach($this->players as $player)
                 {
                     // Observer
-                    $observer = new MonologObserver();
+                    $observer = new MonologBoardObserver();
                     
                     // Board
                     $board = new Board();

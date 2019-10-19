@@ -17,6 +17,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use PropelModels\GameQuery;
 use PropelModels\FleetQuery;
 use PropelModels\History;
+use Services\MonologHistoryObserver;
 
 if(!class_exists('HitCoordinatesController'))
 {
@@ -55,19 +56,23 @@ if(!class_exists('HitCoordinatesController'))
             }
             else {
                 
+                // Observer
+                //$observer = new MonologHistoryObserver();
+                
                 // Save on history
                 $history = new History();
                 $history->setIdGame($gameQuery->getId());
                 $history->setPlayer($player);
                 $history->setX($x);
                 $history->setY($y);
+                //$history->attach($observer);
                 
                 try{
                     $history->save();
                 }
                 catch(\Exception $ex) {
-                    // @todo Save on logs
-                    throw new \Exception($ex->getCode() . ' ' . $ex->getMessage());
+                    // Save on logs
+                    //$history->notify();
                 }
                 
                 // Check if there is a ship at those coordinates, in the player board
