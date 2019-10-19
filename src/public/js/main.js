@@ -10,7 +10,6 @@ const Cell = Vue.component('cell',{
 		cols: Number,
 		col: Number,
 		row: Number,
-		alphabet: Array,
 		player: String,
 		token: String,
 	},
@@ -18,10 +17,11 @@ const Cell = Vue.component('cell',{
 		return {
 			hit: false,
 			attacked: false,
+			currentPlayer: null,
 		}
 	},
 	created() {
-		
+		this.currentPlayer = this.player;
 	},
 	mounted() {
 
@@ -30,19 +30,17 @@ const Cell = Vue.component('cell',{
 
 	},
 	methods: {
-		
+
 		hitCoordinates(row, col) {
 			
-			if(!this.attacked)
+			if(!this.attacked && this.currentPlayer == 2)
 			{
-				axios.get('/api/hit-coordinates/player' + this.player + '/' + this.row + '/' + this.col, {
+				axios.get('/api/hit-coordinates/player' + this.currentPlayer + '/' + this.row + '/' + this.col, {
 	    			
 	    			headers: { Authorization: `${this.token}` }
 	    		
 				}).then((response) => {
 
-					// console.log('hitCoordinates', response.data.results);
-					
 					if(!response.data.results.hit)
 					{
 						this.attacked = true;
@@ -54,16 +52,32 @@ const Cell = Vue.component('cell',{
 						
 						this.$root.$emit('hitShip', response.data.results.shipId, response.data.results.hull);
 					}
+					
+					console.log("CURREENT PLAYA:", this.currentPlayer);
+					
+					// Fight Back
+					EventBus.$emit('fightBack', this.currentPlayer);
+					
+					this.currentPlayer = 1; 
 				});	
 			}
-		}
+		},
+		
+		HitCoordinatesOnFightBack(results) {
+			
+			if(!this.attacked)
+			{
+				let row = results.x;
+				let col = results.y;
+				
+				console.log('HitCoordinatesOnFightBack method:', row, col);
+			}
+		},
 	},
   	template:`<div @click="hitCoordinates((row - 1), (col - 1));">
         		<i v-if="!attacked && !hit" class="fas fa-align-justify"></i>
         		<i v-if="attacked && hit" class="fas fa-bomb"></i>
         		<i v-if="attacked && !hit" class="fas fa-water"></i>
-        		
-        		<!-- Cell {{ alphabet[row - 1].toUpperCase() }}{{ (col - 1) }} -->
         	</div>`
 });
 
@@ -163,7 +177,32 @@ const Board = Vue.component('board',{
 		}
 	},
 	created() {
+
+		EventBus.$on('fightBack', (player) => {
+			
+			// Do the trick: Call the fightBack just once
+			if(this.player.toString() == '2')
+			{
+				let reversedPlayer = ((player.toString() === '2') ? '1' : player.toString());
+				
+				axios.get('/api/fight-back/player' + reversedPlayer, {
+					
+					headers: { Authorization: `${this.token}` }
+				
+				}).then((response) => {
 		
+					let row = response.data.results.x;
+					let col = response.data.results.y;
+					
+					let ref = 'cell-ref-' + reversedPlayer + '-' + row + '-' + col;
+	
+					if(this.$refs[ref])
+					{
+						this.$refs[ref][0].HitCoordinatesOnFightBack(response.data.results);
+					}
+				});
+			}
+		});
 	},
 	mounted() {
 		
@@ -184,7 +223,7 @@ const Board = Vue.component('board',{
 		        	<td class="board-row-header" :class="'board-row-header-' + (row - 1)">{{ alphabet[row - 1].toUpperCase() }}</td>
 		        	
 		        	<td v-for="col in cols" class="board-cell" :class="'board-cell-row-' + (row - 1) + ' board-cell-col-' + (col - 1)">
-	        			<cell :token="token" :player="player" :cols="cols" :col="col - 1" :row="row - 1" :alphabet="alphabet"></cell>
+	        			<cell :token="token" :player="player" :cols="cols" :col="col - 1" :row="row - 1" :key="'cell-' + player + '-' + (row - 1) + '-' + (col - 1)" :ref="'cell-ref-' + player + '-' + (row - 1) + '-' + (col - 1)"></cell>
 	        		</td>
 		        </tr>
 		    </tbody>
@@ -322,10 +361,12 @@ const vm = new Vue({
     	
 		return {
 			token: '',
+			player: 2,
 			gameStarted: false,
 		}
 	},
-    created(){
+    created() {
+		
 		EventBus.$on('setToken', (token) => {
 
 			this.token = token;
@@ -346,6 +387,9 @@ const vm = new Vue({
 				console.log("Game started!");
 			});
 		});
+	},
+	mounted() {
+
 	},
     methods: {
     	

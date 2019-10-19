@@ -66,6 +66,7 @@ if(!class_exists('HitCoordinatesController'))
                     $history->save();
                 }
                 catch(\Exception $ex) {
+                    // @todo Save on logs
                     throw new \Exception($ex->getCode() . ' ' . $ex->getMessage());
                 }
                 
@@ -123,12 +124,13 @@ if(!class_exists('HitCoordinatesController'))
     
                     // Return the hit result
                     return $response->withJson(array('results' => array(
-                        'x' => $x,
-                        'y' => $y,
+                        'x' => intval($x),
+                        'y' => intval($y),
                         'hit' => $hit,
                         'ship' => $affectedShip,
                         'shipId' => $affectedShipId,
                         'hull' => $hullHit,
+                        'action' => 'hitCoordinates',
                         
                     )), 200);
                 }

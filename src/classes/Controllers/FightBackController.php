@@ -97,15 +97,76 @@ if(!class_exists('FightBackController'))
                     $history->save();
                 }
                 catch(\Exception $ex) {
+                    // @todo Save on logs
                     throw new \Exception($ex->getCode() . ' ' . $ex->getMessage());
                 }
 
-                // Return the hit result
-                return $response->withJson(array('results' => array(
-                    'x' => $x,
-                    'y' => $y,
+                // Check if there is a ship at those coordinates, in the player board
+                $hit = false;
+                $hullHit = 0;
+                $affectedShip = '';
+                $affectedShipId = 0;
+                
+                // Get the fleet of the player
+                $fleetQuery = FleetQuery::create()
+                ->filterByIdGame($gameQuery->getId())
+                ->filterBySide($player)
+                ->findOne();
+                
+                // @todo Same code in HitCoordinates, create something general
+                if($fleetQuery)
+                {
+                    $ships = $fleetQuery->getShips();
                     
-                )), 200);
+                    // Check inside the fleet if there is a ship on these coordinates
+                    foreach($ships as $ship)
+                    {
+                        // Edge case: hit at first attempt
+                        if($x == $ship->getStartx() && $y == $ship->getStarty())
+                        {
+                            $hit = true;
+                            
+                            $affectedShip = $ship->getType();
+                            $affectedShipId = $ship->getId();
+                            
+                            break;
+                        }
+                        
+                        // Otherwise check over all coordinates
+                        $allShipCoordinates = json_decode($ship->getCoordinates(), true);
+                        
+                        $hullHit = 0;
+                        foreach($allShipCoordinates as $index => $coordinates)
+                        {
+                            if($x == $coordinates[0] && $y == $coordinates[1])
+                            {
+                                $hit = true;
+                                
+                                $hullHit = $index;
+                                
+                                $affectedShip = $ship->getType();
+                                $affectedShipId = $ship->getId();
+                                
+                                break 2; // break both loops
+                            }
+                        }
+                        
+                        $ship->resetTmpCoordinates();
+                    }
+                    
+                    // Return the hit result
+                    return $response->withJson(array('results' => array(
+                        'x' => intval($x),
+                        'y' => intval($y),
+                        'hit' => $hit,
+                        'ship' => $affectedShip,
+                        'shipId' => $affectedShipId,
+                        'hull' => $hullHit,
+                        'action' => 'fightBack',
+                        'player' => $player
+                        
+                    )), 200);
+                }
             }
 
             // 200 OK
