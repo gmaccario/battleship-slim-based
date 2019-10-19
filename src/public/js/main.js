@@ -41,6 +41,8 @@ const Cell = Vue.component('cell',{
 	    		
 				}).then((response) => {
 
+					// console.log('hitCoordinates', response.data.results);
+					
 					if(!response.data.results.hit)
 					{
 						this.attacked = true;
@@ -52,13 +54,13 @@ const Cell = Vue.component('cell',{
 						
 						this.$root.$emit('hitShip', response.data.results.shipId, response.data.results.hull);
 					}
-					
+
 					console.log("CURREENT PLAYA:", this.currentPlayer);
 					
-					// Fight Back
-					EventBus.$emit('fightBack', this.currentPlayer);
+					//this.currentPlayer == 1;
 					
-					this.currentPlayer = 1; 
+					// Fight Back
+					EventBus.$emit('fightBack', 1);
 				});	
 			}
 		},
@@ -69,9 +71,26 @@ const Cell = Vue.component('cell',{
 			{
 				let row = results.x;
 				let col = results.y;
+				let hit = results.hit;
+				let shipId = results.shipId;
+				let hull = results.hull;
 				
-				console.log('HitCoordinatesOnFightBack method:', row, col);
+				if(!hit)
+				{
+					this.attacked = true;
+				}
+				else {
+					
+					this.hit = true;
+					this.attacked = true;
+					
+					this.$root.$emit('hitShip', shipId, hull);
+				}
+				
+				console.log('HitCoordinatesOnFightBack method 000:', results);
 			}
+			
+			console.log('HitCoordinatesOnFightBack method 111:', results);
 		},
 	},
   	template:`<div @click="hitCoordinates((row - 1), (col - 1));">
@@ -173,39 +192,59 @@ const Board = Vue.component('board',{
 		return {
 			rows: 10,
 			cols: 10,
-			alphabet: [...'abcdefghij'] /*klmnopqrstuvwxyz*/
+			alphabet: [...'abcdefghij'], /*klmnopqrstuvwxyz*/
 		}
 	},
 	created() {
 
 		EventBus.$on('fightBack', (player) => {
+
+			console.log('SENT PLAYA', player);
 			
 			// Do the trick: Call the fightBack just once
-			if(this.player.toString() == '2')
+			if(player.toString() != '1')
 			{
-				let reversedPlayer = ((player.toString() === '2') ? '1' : player.toString());
+				return;
+			}
+			
+			//let reversedPlayer = ((player.toString() === '2') ? '1' : player.toString());
+			
+			//EventBus.$emit('changePlayer', reversedPlayer);
+			
+			console.log("REVERSED:", player.toString());
+			
+			
+			axios.get('/api/fight-back/player' + player, {
 				
-				axios.get('/api/fight-back/player' + reversedPlayer, {
-					
-					headers: { Authorization: `${this.token}` }
-				
-				}).then((response) => {
-		
+				headers: { Authorization: `${this.token}` }
+			
+			}).then((response) => {
+	
+				if(response)
+				{
 					let row = response.data.results.x;
 					let col = response.data.results.y;
+					let results = response.data.results;
 					
-					let ref = 'cell-ref-' + reversedPlayer + '-' + row + '-' + col;
-	
+					let ref = 'cell-ref-' + player + '-' + row + '-' + col;
+
+					console.log("REF", ref);
+					console.log("REF PLAYA OBJ", this.player);
+					console.log("REF PLAYA VAR", player);
+					
 					if(this.$refs[ref])
 					{
-						this.$refs[ref][0].HitCoordinatesOnFightBack(response.data.results);
-					}
-				});
-			}
+						console.log(this.$refs[ref]);
+						
+						this.$refs[ref][0].HitCoordinatesOnFightBack(results);
+					}	
+				}
+			});
 		});
 	},
 	mounted() {
 		
+		// console.log('fight back mounted:', this.$refs);
 	},
 	watch: {
 
@@ -223,7 +262,7 @@ const Board = Vue.component('board',{
 		        	<td class="board-row-header" :class="'board-row-header-' + (row - 1)">{{ alphabet[row - 1].toUpperCase() }}</td>
 		        	
 		        	<td v-for="col in cols" class="board-cell" :class="'board-cell-row-' + (row - 1) + ' board-cell-col-' + (col - 1)">
-	        			<cell :token="token" :player="player" :cols="cols" :col="col - 1" :row="row - 1" :key="'cell-' + player + '-' + (row - 1) + '-' + (col - 1)" :ref="'cell-ref-' + player + '-' + (row - 1) + '-' + (col - 1)"></cell>
+	        			<cell :token="token" :player="player" :cols="cols" :col="col - 1" :row="row - 1" :key="'cell-ref-' + player + '-' + (row - 1) + '-' + (col - 1)" :ref="'cell-ref-' + player + '-' + (row - 1) + '-' + (col - 1)"></cell>
 	        		</td>
 		        </tr>
 		    </tbody>
@@ -367,6 +406,13 @@ const vm = new Vue({
 	},
     created() {
 		
+		/*EventBus.$on('changePlayer', (player) => {
+
+			this.player = player;
+			
+			console.log('Playa:', this.player);
+		});*/
+		
 		EventBus.$on('setToken', (token) => {
 
 			this.token = token;
@@ -389,7 +435,7 @@ const vm = new Vue({
 		});
 	},
 	mounted() {
-
+		//console.log('Playa:', this.player);
 	},
     methods: {
     	
