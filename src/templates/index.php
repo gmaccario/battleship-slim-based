@@ -31,6 +31,7 @@
             </div>
             
             <div id="app" class="container-fluid">
+            	
                 <div class="row" v-if="!gameStarted">
                 	<div class="col">
                 		<div class="levels">
@@ -43,6 +44,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="row" v-if="gameOver">
                 	<div class="alert alert-success" role="alert" v-if="won == 1">
 						<p>You win!</p>
@@ -52,41 +54,41 @@
                     </div>
                 </div>
                 
-                <div class="row" v-if="difficulty">
+                <div class="row" v-if="difficulty && gameStarted && !gameOver">
                 	
                 	<div v-if="difficultyLevel == '1'" >
                         <div class="alert alert-primary float-left" role="alert">
-                        	<span>{{ difficulty }}</span>
+                        	<span>{{ difficulty.charAt(0).toUpperCase() + difficulty.split('-').join(' ').toLowerCase().slice(1) }}</span>
                         </div>
-                        <countdown class="float-right" :timer=5 :speed=1 v-if="gameStarted && !gameOver"></countdown>
+                        <countdown class="float-right" :timer=5 :speed=1></countdown>
                     </div>
                     
                     <div v-if="difficultyLevel == '2'" >
     					<div class="alert alert-secondary float-left" v-if="difficulty == 'too-young-to-die'" role="alert">
-                        	<span>{{ difficulty }}</span>
+                        	<span>{{ difficulty.charAt(0).toUpperCase() + difficulty.split('-').join(' ').toLowerCase().slice(1) }}</span>
                         </div>
-                        <countdown class="float-right" :timer=4 :speed=1 v-if="gameStarted && !gameOver"></countdown>
+                        <countdown class="float-right" :timer=4 :speed=1></countdown>
                     </div>
                     
                     <div v-if="difficultyLevel == '3'" >
                         <div class="alert alert-warning float-left" v-if="difficulty == 'warning-zone'" role="alert">
-                        	<span>{{ difficulty }}</span>
+                        	<span>{{ difficulty.charAt(0).toUpperCase() + difficulty.split('-').join(' ').toLowerCase().slice(1) }}</span>
                         </div>
-                        <countdown class="float-right" :timer=3 :speed=2 v-if="gameStarted && !gameOver"></countdown>
+                        <countdown class="float-right" :timer=3 :speed=2></countdown>
                     </div>
                     
                     <div v-if="difficultyLevel == '4'" >
                         <div class="alert alert-danger float-left" v-if="difficulty == 'danger-zone'" role="alert">
-                        	<span>{{ difficulty }}</span>
+                        	<span>{{ difficulty.charAt(0).toUpperCase() + difficulty.split('-').join(' ').toLowerCase().slice(1) }}</span>
                         </div>
-                        <countdown class="float-right" :timer=2 :speed=3 v-if="gameStarted && !gameOver"></countdown>
+                        <countdown class="float-right" :timer=2 :speed=3></countdown>
                     </div>
                     
                     <div v-if="difficultyLevel == '5'" >
                         <div class="alert alert-dark float-left" v-if="difficulty == 'ultre-nightmare'" role="alert">
-                        	<span>{{ difficulty }}</span>
+                        	<span>{{ difficulty.charAt(0).toUpperCase() + difficulty.split('-').join(' ').toLowerCase().slice(1) }}</span>
                         </div>
-                        <countdown class="float-right" :timer=1 :speed=4 v-if="gameStarted && !gameOver"></countdown>
+                        <countdown class="float-right" :timer=1 :speed=4></countdown>
                     </div>
                 </div>
                 
