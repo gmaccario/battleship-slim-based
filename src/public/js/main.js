@@ -102,9 +102,11 @@ const Cell = Vue.component('cell',{
 		},
 	},
   	template:`<div @click="hitCoordinates((row - 1), (col - 1));">
-        		<i v-if="!attacked && !hit && !gameOver" class="fas fa-align-justify animated swing"></i>
+        		<i v-if="!attacked && !hit && !gameOver" class="fas fa-align-justify animated rubberBand"></i>
+        		
         		<i v-if="attacked && hit && !gameOver" class="fas fa-bomb animated bounce"></i>
-        		<i v-if="attacked && !hit && !gameOver" class="fas fa-water animated jackInTheBox"></i>
+        		
+        		<i v-if="attacked && !hit && !gameOver" class="fas fa-water animated wobble"></i>
         		<i v-if="gameOver" class="fas fa-ban animated zoomIn"></i>
         	</div>`
 });
@@ -174,7 +176,11 @@ const Countdown = Vue.component('countdown',{
 		    }, (1000 / this.speed));
 		},
 	},
-  	template:`<div>
+  	template:`<div class="countdown">
+  		<div class="countdown-block">
+	        <p class="digit"><i class="fas fa-hourglass-half"></i></p>
+	        <p class="text">&nbsp;</p>
+	    </div>
 	    <div class="countdown-block">
 	        <p class="digit">{{ minutes }}</p>
 	        <p class="text">Minutes</p>
@@ -302,7 +308,6 @@ const Fleet = Vue.component('fleet',{
 				
 				if(this.shipsHullsTotal[player].toString() == '0')
 				{
-					// @todo 
 					console.log("GAME OVER");
 					
 					EventBus.$emit('gameOver', player);
@@ -572,6 +577,8 @@ const vm = new Vue({
 			{
 				this.won = ((player.toString() === '2') ? '1' : player.toString());	
 			}
+			
+			// @todo Send a message to save the winner on db
 			
 			this.gameOver = true;
 		});

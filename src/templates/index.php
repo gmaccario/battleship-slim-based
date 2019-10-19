@@ -53,41 +53,40 @@
                 </div>
                 
                 <div class="row" v-if="difficulty">
-                	<p>Level</p>
                 	
                 	<div v-if="difficultyLevel == '1'" >
-                        <div class="alert alert-primary" role="alert">
+                        <div class="alert alert-primary float-left" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
-                        <countdown :timer=5 :speed=1 v-if="gameStarted"></countdown>
+                        <countdown class="float-right" :timer=5 :speed=1 v-if="gameStarted && !gameOver"></countdown>
                     </div>
                     
                     <div v-if="difficultyLevel == '2'" >
-    					<div class="alert alert-secondary" v-if="difficulty == 'too-young-to-die'" role="alert">
+    					<div class="alert alert-secondary float-left" v-if="difficulty == 'too-young-to-die'" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
-                        <countdown :timer=4 :speed=1 v-if="gameStarted"></countdown>
+                        <countdown class="float-right" :timer=4 :speed=1 v-if="gameStarted && !gameOver"></countdown>
                     </div>
                     
                     <div v-if="difficultyLevel == '3'" >
-                        <div class="alert alert-warning" v-if="difficulty == 'warning-zone'" role="alert">
+                        <div class="alert alert-warning float-left" v-if="difficulty == 'warning-zone'" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
-                        <countdown :timer=3 :speed=2 v-if="gameStarted"></countdown>
+                        <countdown class="float-right" :timer=3 :speed=2 v-if="gameStarted && !gameOver"></countdown>
                     </div>
                     
                     <div v-if="difficultyLevel == '4'" >
-                        <div class="alert alert-danger" v-if="difficulty == 'danger-zone'" role="alert">
+                        <div class="alert alert-danger float-left" v-if="difficulty == 'danger-zone'" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
-                        <countdown :timer=2 :speed=3 v-if="gameStarted"></countdown>
+                        <countdown class="float-right" :timer=2 :speed=3 v-if="gameStarted && !gameOver"></countdown>
                     </div>
                     
                     <div v-if="difficultyLevel == '5'" >
-                        <div class="alert alert-dark" v-if="difficulty == 'ultre-nightmare'" role="alert">
+                        <div class="alert alert-dark float-left" v-if="difficulty == 'ultre-nightmare'" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
-                        <countdown :timer=1 :speed=4 v-if="gameStarted"></countdown>
+                        <countdown class="float-right" :timer=1 :speed=4 v-if="gameStarted && !gameOver"></countdown>
                     </div>
                 </div>
                 

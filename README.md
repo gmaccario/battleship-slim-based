@@ -52,7 +52,7 @@ We're going to play Battleship!
 3. Warning zone
 - 3 minutes
 - speed x 2 (0.5 second)
-- horizontal scraping on enemy hit (memory on previous hit)
+- only horizontal scraping on enemy hit (memory on previous hit)
 
 4. Danger zone
 - 2 minutes
