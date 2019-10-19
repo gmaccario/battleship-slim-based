@@ -59,124 +59,189 @@ if(!class_exists('FightBackController'))
             }
             else {
 
-                // Get history per player
-                $historyQuery = HistoryQuery::create()
+                // Get history per player on last hit
+                $historyQueryFindPreviousHit = HistoryQuery::create()
                 ->filterByIdGame($gameQuery->getId())
                 ->filterByPlayer($player)
-                ->find();
+                ->filterByHit('1')
+                ->orderByIdGame('desc')
+                ->findOne();
 
-                // History moves
-                $moves = array();
-                $historyMovement = $historyQuery->getData();
-                foreach($historyMovement as $move)
-                {
-                    array_push($moves, array($move->getX(), $move->getY()));
-                }
+                /*
+                 * @todo
+                 * 
+                 * Get the level per game $gameQuery
+                 * The level needs an intelligence?
+                 * Horizontal or Vertical or both of them
+                 * 
+                 * If yes get the last hit from player and check horizontally or vertically
+                 * otherwise do the normal way
+                 * 
+                 */
                 
-                // Board
-                // @todo Refactoring using DB
-                $board = array();
-                for ($row = 0; $row <= 9; $row++)
+                $difficultyLevel = $gameQuery->getDifficulty();
+                
+                if($historyQueryFindPreviousHit && $difficultyLevel >= 3)
                 {
-                    for ($column = 0; $column <= 9; $column++)
+                    $lastHitX = $historyQueryFindPreviousHit->getX();
+                    $lastHitY = $historyQueryFindPreviousHit->getY();
+                    
+                    // Scraping direction
+                    if($difficultyLevel == 3)
                     {
-                        array_push($board, array($row, $column));
+                        // only horizontal scraping
+
+                        // @todo get these values from the game
+                        if($lastHitX < 9 && $lastHitX > 0)
+                        {
+                            $x = $lastHitX;
+                            $y = $lastHitY + 1;
+                        }
+                        
                     }
-                }
-                
-                // Get random coordinates
-                $diff = array_diff_assoc($board, $moves);
-                $idRandomCoordinates = array_rand($diff);
-                $randomCoordinates = $diff[$idRandomCoordinates];
-                
-                list($x, $y) = $randomCoordinates;
-            }
-            
-            // Check if there is a ship at those coordinates, in the player board
-            $hit = false;
-            $hullHit = 0;
-            $affectedShip = '';
-            $affectedShipId = 0;
-            
-            // Get the fleet of the player
-            $fleetQuery = FleetQuery::create()
-            ->filterByIdGame($gameQuery->getId())
-            ->filterBySide($player)
-            ->findOne();
-            
-            // @todo Same code in HitCoordinates, create something general
-            if($fleetQuery)
-            {
-                $ships = $fleetQuery->getShips();
-                
-                // Check inside the fleet if there is a ship on these coordinates
-                foreach($ships as $ship)
-                {
-                    // Edge case: hit at first attempt
-                    if($x == $ship->getStartx() && $y == $ship->getStarty())
-                    {
-                        $hit = true;
+                    else {
                         
-                        $affectedShip = $ship->getType();
-                        $affectedShipId = $ship->getId();
+                        // horizontal and vertical scraping
+                        // @todo get these values from the game
+                        if($lastHitX < 9)
+                        {
+                            $x = $lastHitX;
+                            $y = $lastHitY + 1;
+                        }
+                        else {
+                            $x = $lastHitX + 1;
+                            $y = $lastHitY;
+                        }
                         
-                        break;
                     }
                     
-                    // Otherwise check over all coordinates
-                    $allShipCoordinates = json_decode($ship->getCoordinates(), true);
+                    // Get intelligent coordinates                    
+                    //list($x, $y) = $randomCoordinates;
                     
-                    $hullHit = 0;
-                    foreach($allShipCoordinates as $index => $coordinates)
+                       
+                }
+                else {
+                    
+                    // Get history per player
+                    $historyQuery = HistoryQuery::create()
+                    ->filterByIdGame($gameQuery->getId())
+                    ->filterByPlayer($player)
+                    ->find();
+    
+                    // History moves
+                    $moves = array();
+                    $historyMovement = $historyQuery->getData();
+                    foreach($historyMovement as $move)
                     {
-                        if($x == $coordinates[0] && $y == $coordinates[1])
+                        array_push($moves, array($move->getX(), $move->getY()));
+                    }
+                    
+                    // Board
+                    // @todo Refactoring using DB
+                    $board = array();
+                    for ($row = 0; $row <= 9; $row++)
+                    {
+                        for ($column = 0; $column <= 9; $column++)
+                        {
+                            array_push($board, array($row, $column));
+                        }
+                    }
+                    
+                    // Get random coordinates
+                    $diff = array_diff_assoc($board, $moves);
+                    $idRandomCoordinates = array_rand($diff);
+                    $randomCoordinates = $diff[$idRandomCoordinates];
+                    
+                    list($x, $y) = $randomCoordinates;
+                }
+                
+                // Check if there is a ship at those coordinates, in the player board
+                $hit = false;
+                $hullHit = 0;
+                $affectedShip = '';
+                $affectedShipId = 0;
+                
+                // Get the fleet of the player
+                $fleetQuery = FleetQuery::create()
+                ->filterByIdGame($gameQuery->getId())
+                ->filterBySide($player)
+                ->findOne();
+                
+                // @todo Same code in HitCoordinates, create something general
+                if($fleetQuery)
+                {
+                    $ships = $fleetQuery->getShips();
+                    
+                    // Check inside the fleet if there is a ship on these coordinates
+                    foreach($ships as $ship)
+                    {
+                        // Edge case: hit at first attempt
+                        if($x == $ship->getStartx() && $y == $ship->getStarty())
                         {
                             $hit = true;
-                            
-                            $hullHit = $index;
                             
                             $affectedShip = $ship->getType();
                             $affectedShipId = $ship->getId();
                             
-                            break 2; // break both loops
+                            break;
                         }
+                        
+                        // Otherwise check over all coordinates
+                        $allShipCoordinates = json_decode($ship->getCoordinates(), true);
+                        
+                        $hullHit = 0;
+                        foreach($allShipCoordinates as $index => $coordinates)
+                        {
+                            if($x == $coordinates[0] && $y == $coordinates[1])
+                            {
+                                $hit = true;
+                                
+                                $hullHit = $index;
+                                
+                                $affectedShip = $ship->getType();
+                                $affectedShipId = $ship->getId();
+                                
+                                break 2; // break both loops
+                            }
+                        }
+                        
+                        $ship->resetTmpCoordinates();
                     }
                     
-                    $ship->resetTmpCoordinates();
-                }
-                
-                // Observer
-                //$observer = new MonologHistoryObserver();
-                
-                // Save on history
-                $history = new History();
-                $history->setIdGame($gameQuery->getId());
-                $history->setPlayer($player);
-                $history->setX($x);
-                $history->setY($y);
-                $history->setHit($hit);
-                //$history->attach($observer);
-                
-                try{
-                    $history->save();
-                }
-                catch(\Exception $ex) {
-                    // Save on logs
-                    //$history->notify();
-                }
-                
-                // Return the hit result
-                return $response->withJson(array('results' => array(
-                    'x' => intval($x),
-                    'y' => intval($y),
-                    'hit' => $hit,
-                    'ship' => $affectedShip,
-                    'shipId' => $affectedShipId,
-                    'hull' => $hullHit,
-                    'action' => 'fightBack',
-                    'player' => $player
+                    // Observer
+                    //$observer = new MonologHistoryObserver();
                     
-                )), 200);
+                    // Save on history
+                    $history = new History();
+                    $history->setIdGame($gameQuery->getId());
+                    $history->setPlayer($player);
+                    $history->setX($x);
+                    $history->setY($y);
+                    $history->setHit($hit);
+                    //$history->attach($observer);
+                    
+                    try{
+                        $history->save();
+                    }
+                    catch(\Exception $ex) {
+                        // Save on logs
+                        //$history->notify();
+                    }
+                    
+                    
+                    // Return the hit result
+                    return $response->withJson(array('results' => array(
+                        'x' => intval($x),
+                        'y' => intval($y),
+                        'hit' => $hit,
+                        'ship' => $affectedShip,
+                        'shipId' => $affectedShipId,
+                        'hull' => $hullHit,
+                        'action' => 'fightBack',
+                        'player' => $player
+                        
+                    )), 200);
+                }
             }
 
             // 200 OK

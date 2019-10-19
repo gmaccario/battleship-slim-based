@@ -1,13 +1,21 @@
-a,h1,h2,h3,h4,h5,h6,p,span{font-family:Roboto,sans-serif;color:#04595e}table{border:1px solid silver;border-collapse:collapse}table tr td{border:1px solid silver;padding:.5em}table span{font-size:.9em}footer{border-top:1px solid #04595e;margin-top:1em}footer span{float:right;font-size:.8em}.water{background-color:#0ff}.bomb{background-color:red}.btn-primary span{color:#fff}.fleet .ship{height:25px;margin-bottom:.3em;width:30%;float:left}
+a,h1,h2,h3,h4,h5,h6,p,span{font-family:Roboto,sans-serif;color:#04595e}table{border:1px solid silver;border-collapse:collapse}table tr td{border:1px solid silver;padding:.5em}table span{font-size:.9em}footer{border-top:1px solid #04595e;margin-top:1em}footer span{float:right;font-size:.8em}.water{background-color:#0ff}.bomb{background-color:red}.btn-primary span{color:#fff}
 
 
 
+#app{
+	min-height: 350px;	
+}
 
+
+.fleet .ship{height:25px;margin-bottom:.3em;width:30%;float:left}
 .fleet .ship .ship-hull{height:20px;width:20px;float:left;border:1px solid #04595e;background-color:silver}
 .fleet .ship .ship-hull.hit{background-color:red}
 
 
 .fleet-solutions{clear:both;display:block}.game-over{display:none;border:1px solid #04595e;position:absolute;top:50%;left:50%;width:400px;height:200px;margin-left:-200px;margin-top:-200px;text-align:center;padding:3em;background-color:red;z-index:999}.game-over.player1{background-color:green}.game-over a,.game-over span{color:#ffffff}.game-over .message{display:none}.table-content { width: 20px; }.board.player2 .fa-align-justify:hover{ cursor: pointer; }
+
+
+
 
 
 
@@ -24,4 +32,86 @@ a,h1,h2,h3,h4,h5,h6,p,span{font-family:Roboto,sans-serif;color:#04595e}table{bor
 
 .countdown-block .digit {
     text-align: center;
+}
+
+
+
+
+
+
+
+section {
+    padding: 60px 0;
+}
+
+section .section-title {
+    text-align: center;
+    color: #007b5e;
+    margin-bottom: 50px;
+    text-transform: uppercase;
+}
+#footer {
+	margin-top: 1em;
+	border-top: 1px solid #c0c0c0;
+    /*background: #007b5e !important;*/
+}
+#footer h5{
+	padding-left: 10px;
+    border-left: 3px solid #eeeeee;
+    padding-bottom: 6px;
+    margin-bottom: 20px;
+    /*color:#ffffff;*/
+}
+#footer a {
+    /*color: #ffffff;*/
+    text-decoration: none !important;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
+#footer ul.social li{
+	padding: 3px 0;
+}
+#footer ul.social li a i {
+    margin-right: 5px;
+	font-size:25px;
+	-webkit-transition: .5s all ease;
+	-moz-transition: .5s all ease;
+	transition: .5s all ease;
+}
+#footer ul.social li:hover a i {
+	font-size:30px;
+	margin-top:-10px;
+}
+#footer ul.social li a,
+#footer ul.quick-links li a{
+	/*color:#ffffff;*/
+}
+#footer ul.social li a:hover{
+	/*color:#eeeeee;*/
+}
+#footer ul.quick-links li{
+	padding: 3px 0;
+	-webkit-transition: .5s all ease;
+	-moz-transition: .5s all ease;
+	transition: .5s all ease;
+}
+#footer ul.quick-links li:hover{
+	padding: 3px 0;
+	margin-left:5px;
+	font-weight:700;
+}
+#footer ul.quick-links li a i{
+	margin-right: 5px;
+}
+#footer ul.quick-links li:hover a i {
+    font-weight: 700;
+}
+
+@media (max-width:767px){
+	#footer h5 {
+    padding-left: 0;
+    border-left: transparent;
+    padding-bottom: 0px;
+    margin-bottom: 10px;
+}
 }

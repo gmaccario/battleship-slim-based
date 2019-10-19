@@ -45,6 +45,32 @@
                     </div>
                 </div>
                 
+                <div class="row" v-if="!gameStarted">
+                	<div class="col">
+                		<div class="intro">
+                			
+                			<h3>Setup</h3>
+                			<p>Each player's fleet contains 5 different ships:</p>
+
+							<ul>
+                                <li>Battleship (4 holes)</li>
+                                <li>Aircraft Carrier (3 holes)</li>
+                                <li>Destroyer (2 holes)</li>
+                                <li>Small Ship (1 holes)</li>
+                            </ul>
+                            
+                            <h3>Game Play</h3>
+
+                            <p>You and your opponent will alternate turns, calling out one shot per turn to try to hit each other's ships.
+                            On your turn, pick a target hole on Board 2 (enemy's board) and click out its location. Hit or miss?</p>
+							
+							<h3>End of the Game</h3>
+							<p>If you are the first player to sink your opponent's entire fleet of 5 ships, you win the game.</p>
+
+                		</div>
+                	</div>
+                </div>
+                
                 <div class="row" v-if="gameOver">
                 	<div class="alert alert-success" role="alert" v-if="won == 1">
 						<p>You win!</p>
@@ -111,11 +137,61 @@
 			<div class="container-fluid">
 				<div class="row">
                     <div class="col">
-                    	<footer>
-                    		<a href="https://www.giuseppemaccario.com/" target="_blank">
-                    			<span>G. Maccario</span>
-                    		</a>
-                    	</footer>
+                    	<section id="footer">
+                        	<div class="container">
+                        		<div class="row text-center text-xs-center text-sm-left text-md-left">
+                        			<div class="col-xs-12 col-sm-4 col-md-4">
+                        				<h5>Quick links</h5>
+                        				<ul class="list-unstyled quick-links">
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Home</a></li>
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>About</a></li>
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>FAQ</a></li>
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Get Started</a></li>
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Videos</a></li>
+                        				</ul>
+                        			</div>
+                        			<div class="col-xs-12 col-sm-4 col-md-4">
+                        				<h5>Quick links</h5>
+                        				<ul class="list-unstyled quick-links">
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Home</a></li>
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>About</a></li>
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>FAQ</a></li>
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Get Started</a></li>
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Videos</a></li>
+                        				</ul>
+                        			</div>
+                        			<div class="col-xs-12 col-sm-4 col-md-4">
+                        				<h5>Quick links</h5>
+                        				<ul class="list-unstyled quick-links">
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Home</a></li>
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>About</a></li>
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>FAQ</a></li>
+                        					<li><a href="javascript:void();"><i class="fa fa-angle-double-right"></i>Get Started</a></li>
+                        					<li><a href="https://wwwe.sunlimetech.com" title="Design and developed by"><i class="fa fa-angle-double-right"></i>Imprint</a></li>
+                        				</ul>
+                        			</div>
+                        		</div>
+                        		<div class="row">
+                        			<div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-5">
+                        				<ul class="list-unstyled list-inline social text-center">
+                        					<li class="list-inline-item"><a href="javascript:void();"><i class="fa fa-facebook"></i></a></li>
+                        					<li class="list-inline-item"><a href="javascript:void();"><i class="fa fa-twitter"></i></a></li>
+                        					<li class="list-inline-item"><a href="javascript:void();"><i class="fa fa-instagram"></i></a></li>
+                        					<li class="list-inline-item"><a href="javascript:void();"><i class="fa fa-google-plus"></i></a></li>
+                        					<li class="list-inline-item"><a href="javascript:void();" target="_blank"><i class="fa fa-envelope"></i></a></li>
+                        				</ul>
+                        			</div>
+                        			</hr>
+                        		</div>	
+                        		<div class="row">
+                        			<div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-2 text-center text-white">
+                        				<p><u><a href="https://www.nationaltransaction.com/">National Transaction Corporation</a></u> is a Registered MSP/ISO of Elavon, Inc. Georgia [a wholly owned subsidiary of U.S. Bancorp, Minneapolis, MN]</p>
+                        				<p class="h6">&copy All right Reversed.<a class="text-green ml-2" href="https://www.sunlimetech.com" target="_blank">Sunlimetech</a></p>
+                        			</div>
+                        			</hr>
+                        		</div>	
+                        	</div>
+                        </section>
 					</div>
                 </div>
             </div>

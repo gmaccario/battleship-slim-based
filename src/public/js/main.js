@@ -181,7 +181,7 @@ const Countdown = Vue.component('countdown',{
 	        <p class="digit"><i class="fas fa-hourglass-half"></i></p>
 	        <p class="text">&nbsp;</p>
 	    </div>
-	    <div class="countdown-block">
+	    <div class="countdown-block" v-if="minutes > 0">
 	        <p class="digit">{{ minutes }}</p>
 	        <p class="text">Minutes</p>
 	    </div>
