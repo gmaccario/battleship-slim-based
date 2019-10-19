@@ -52,7 +52,7 @@ const Cell = Vue.component('cell',{
 						this.hit = true;
 						this.attacked = true;
 						
-						this.$root.$emit('hitShip', response.data.results.shipId, response.data.results.hull);
+						this.$root.$emit('hitShip', this.player, response.data.results.shipId, response.data.results.hull);
 					}
 
 					console.log("CURREENT PLAYA:", this.currentPlayer);
@@ -84,13 +84,13 @@ const Cell = Vue.component('cell',{
 					this.hit = true;
 					this.attacked = true;
 					
-					this.$root.$emit('hitShip', shipId, hull);
+					this.$root.$emit('hitShip', this.player, shipId, hull);
 				}
 				
 				console.log('HitCoordinatesOnFightBack method 000:', results);
 			}
 			
-			console.log('HitCoordinatesOnFightBack method 111:', results);
+			// console.log('HitCoordinatesOnFightBack method 111:', results);
 		},
 	},
   	template:`<div @click="hitCoordinates((row - 1), (col - 1));">
@@ -118,11 +118,14 @@ const Hull = Vue.component('hull',{
 		
 	},
 	mounted() {
-		this.$root.$on('hitHull', (shipId, hullId) => {
+		this.$root.$on('hitHull', (player, shipId, hullId) => {
 
 			if(shipId == this.ship.id && hullId == this.id) 
 			{
 				this.hit = true;
+				
+				// Decrease Intact Hulls
+				this.$root.$emit('decreaseIntactHulls', player);
 			}
 		})
 	},
@@ -154,13 +157,13 @@ const Ship = Vue.component('ship',{
 	},
 	mounted() {
 		
-		this.$root.$on('hitShip', (shipId, hullId) => {
+		this.$root.$on('hitShip', (player, shipId, hullId) => {
 			
 			if(shipId == this.shipId) 
 			{
-				this.$root.$emit('hitHull', shipId, hullId);
+				this.$root.$emit('hitHull', player, shipId, hullId);
 			}
-		})
+		});
 	},
 	watch: {
 		
@@ -177,6 +180,86 @@ const Ship = Vue.component('ship',{
   					<hull :ship="ship" :id="hullId - 1"></hull>
   				</div>
   			</diV>`
+});
+
+//Fleet Component
+const Fleet = Vue.component('fleet',{
+	components: {
+		'ship': Ship,
+	},
+	props: {
+		player: String,
+		token: String,
+		gameStarted: Boolean,
+	},
+	data(){
+		return {
+			ships: [],
+			shipsHullsTotal: []
+		}
+	},
+	created() {
+		
+	},
+	mounted() {
+		
+		this.$root.$on('decreaseIntactHulls', (player) => {
+			
+			if(this.shipsHullsTotal[player])
+			{
+				// Decrease Intact Hulls
+				this.shipsHullsTotal[player] = this.shipsHullsTotal[player] - 1;
+				
+				console.log("DECREASED", 'player' + player, this.shipsHullsTotal[player]);
+				
+				if(this.shipsHullsTotal[player].toString() == '0')
+				{
+					// @todo 
+					alert("GAME OVER");
+				}	
+			}
+		});
+	},
+	watch: {
+		
+		gameStarted: function (val) {
+
+			this.setFleet();
+	    },
+	    
+	    ships: function (val) {
+	    	
+	    	let totalHulls = 0;
+	    	this.ships.forEach(function(ship) {
+	    		
+	    		totalHulls = totalHulls + ship.len;
+			});
+	    	
+	    	this.shipsHullsTotal[this.player] = totalHulls;
+	    },
+	},
+	methods: {
+		
+		setFleet() {
+
+			axios.get('/api/get-fleet/player' + this.player, {
+    			
+    			headers: { Authorization: `${this.token}` }
+    		
+			}).then((response) => {
+
+				this.ships = response.data.results;
+			});
+		},
+	},
+  	template:`<div class="fleet" :class="'player' + player">
+  			<p>Fleet {{ player }}</p>
+  			
+  			<div v-for="ship in ships">
+	  			<ship :ship="ship"></ship>
+	  		</div>
+  			 
+  		</div>`
 });
 
 // Board Component
@@ -276,58 +359,6 @@ const Board = Vue.component('board',{
   		</div>`
 });
 
-// Fleet Component
-const Fleet = Vue.component('fleet',{
-	components: {
-		'ship': Ship,
-	},
-	props: {
-		player: String,
-		token: String,
-		gameStarted: Boolean,
-	},
-	data(){
-		return {
-			ships: [],
-		}
-	},
-	created() {
-		
-	},
-	mounted() {
-		
-	},
-	watch: {
-		
-		gameStarted: function (val) {
-
-			this.setFleet();
-	    },
-	},
-	methods: {
-		
-		setFleet() {
-
-			axios.get('/api/get-fleet/player' + this.player, {
-    			
-    			headers: { Authorization: `${this.token}` }
-    		
-			}).then((response) => {
-
-				this.ships = response.data.results;
-			});
-		},
-	},
-  	template:`<div class="fleet" :class="'player' + player">
-  			<p>Fleet {{ player }}</p>
-  			
-  			<div v-for="ship in ships">
-	  			<ship :ship="ship"></ship>
-	  		</div>
-  			 
-  		</div>`
-});
-
 // Difficulty Component
 const Difficulty = Vue.component('difficulty',{
 	components: {
@@ -400,7 +431,7 @@ const vm = new Vue({
     	
 		return {
 			token: '',
-			player: 2,
+			//player: 2,
 			gameStarted: false,
 		}
 	},
