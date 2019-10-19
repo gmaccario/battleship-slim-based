@@ -31,11 +31,15 @@ final class BoardTest extends TestCase
         $board->createBoard();
         
         $ship = new Ship();
+        $ship->setIdFleet(1);
         $ship->setType('battleship');
+        $ship->setLength(4);
         $ship->setStartx(1);
         $ship->setStarty(5);
+        $ship->setDirection('horizontal');
+        $ship->setCoordinatesOnDirection(1, 5);
         
-        $board->placeShip($ship);
+        $board->placeShipOnBoard($ship);
         
         $actual = $board->getBoard()[1][5];
         
@@ -48,11 +52,15 @@ final class BoardTest extends TestCase
         $board->createBoard();
         
         $ship = new Ship();
+        $ship->setIdFleet(1);
         $ship->setType('battleship');
+        $ship->setLength(4);
         $ship->setStartx(0);
         $ship->setStarty(0);
+        $ship->setDirection('horizontal');
+        $ship->setCoordinatesOnDirection(0, 0);
 
-        $board->placeShip($ship);
+        $board->placeShipOnBoard($ship);
         
         $actual = $board->getBoard()[0][0];
         
