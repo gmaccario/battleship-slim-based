@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
         <link rel="stylesheet" href="/src/public/css/main.css" >
     
         <title>Battleship</title>
@@ -58,35 +59,35 @@
                         <div class="alert alert-primary" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
-                        <countdown :timer=5 v-if="gameStarted"></countdown>
+                        <countdown :timer=5 :speed=1 v-if="gameStarted"></countdown>
                     </div>
                     
                     <div v-if="difficulty == 'too-young-to-die'" >
     					<div class="alert alert-secondary" v-if="difficulty == 'too-young-to-die'" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
-                        <countdown :timer=4 v-if="gameStarted"></countdown>
+                        <countdown :timer=4 :speed=1 v-if="gameStarted"></countdown>
                     </div>
                     
                     <div v-if="difficulty == 'warning-zone'" >
                         <div class="alert alert-warning" v-if="difficulty == 'warning-zone'" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
-                        <countdown :timer=3 v-if="gameStarted"></countdown>
+                        <countdown :timer=3 :speed=2 v-if="gameStarted"></countdown>
                     </div>
                     
                     <div v-if="difficulty == 'danger-zone'" >
                         <div class="alert alert-danger" v-if="difficulty == 'danger-zone'" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
-                        <countdown :timer=2 v-if="gameStarted"></countdown>
+                        <countdown :timer=2 :speed=3 v-if="gameStarted"></countdown>
                     </div>
                     
                     <div v-if="difficulty == 'ultre-nightmare'" >
                         <div class="alert alert-dark" v-if="difficulty == 'ultre-nightmare'" role="alert">
                         	<span>{{ difficulty }}</span>
                         </div>
-                        <countdown :timer=1 v-if="gameStarted"></countdown>
+                        <countdown :timer=1 :speed=4 v-if="gameStarted"></countdown>
                     </div>
                 </div>
                 

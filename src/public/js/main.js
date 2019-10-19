@@ -102,10 +102,10 @@ const Cell = Vue.component('cell',{
 		},
 	},
   	template:`<div @click="hitCoordinates((row - 1), (col - 1));">
-        		<i v-if="!attacked && !hit && !gameOver" class="fas fa-align-justify"></i>
-        		<i v-if="attacked && hit && !gameOver" class="fas fa-bomb"></i>
-        		<i v-if="attacked && !hit && !gameOver" class="fas fa-water"></i>
-        		<i v-if="gameOver" class="fas fa-ban"></i>
+        		<i v-if="!attacked && !hit && !gameOver" class="fas fa-align-justify animated swing"></i>
+        		<i v-if="attacked && hit && !gameOver" class="fas fa-bomb animated bounce"></i>
+        		<i v-if="attacked && !hit && !gameOver" class="fas fa-water animated jackInTheBox"></i>
+        		<i v-if="gameOver" class="fas fa-ban animated zoomIn"></i>
         	</div>`
 });
 
@@ -116,6 +116,7 @@ const Countdown = Vue.component('countdown',{
 	},
 	props: {
 		timer: Number,
+		speed: Number,
 	},
 	data(){
 		return {
@@ -150,8 +151,7 @@ const Countdown = Vue.component('countdown',{
 		        {
 		        	clearInterval(this.innerSetInterval);
 		        	
-		        	// @todo 
-					console.log("GAME OVER Timer");
+					console.log("GAME OVER by Timer");
 					
 					EventBus.$emit('gameOver');
 					
@@ -171,7 +171,7 @@ const Countdown = Vue.component('countdown',{
 		        		this.minutes = this.minutes - 1;
 		        	}
 		        }
-		    }, 250);
+		    }, (1000 / this.speed));
 		},
 	},
   	template:`<div>
@@ -223,7 +223,7 @@ const Hull = Vue.component('hull',{
 	methods: {
 		
 	},
-  	template:`<div class="ship-hull" :class="{'hit': hit}" :title="ship.type"></div>`
+  	template:`<div class="ship-hull" :class="{'hit': hit, 'animated bounce': hit}" :title="ship.type"></div>`
 });
 
 // Ship Component

@@ -25,12 +25,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHistoryQuery orderByPlayer($order = Criteria::ASC) Order by the player column
  * @method     ChildHistoryQuery orderByX($order = Criteria::ASC) Order by the x column
  * @method     ChildHistoryQuery orderByY($order = Criteria::ASC) Order by the y column
+ * @method     ChildHistoryQuery orderByHit($order = Criteria::ASC) Order by the hit column
  *
  * @method     ChildHistoryQuery groupById() Group by the id column
  * @method     ChildHistoryQuery groupByIdGame() Group by the id_game column
  * @method     ChildHistoryQuery groupByPlayer() Group by the player column
  * @method     ChildHistoryQuery groupByX() Group by the x column
  * @method     ChildHistoryQuery groupByY() Group by the y column
+ * @method     ChildHistoryQuery groupByHit() Group by the hit column
  *
  * @method     ChildHistoryQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildHistoryQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -59,7 +61,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHistory findOneByIdGame(int $id_game) Return the first ChildHistory filtered by the id_game column
  * @method     ChildHistory findOneByPlayer(string $player) Return the first ChildHistory filtered by the player column
  * @method     ChildHistory findOneByX(int $x) Return the first ChildHistory filtered by the x column
- * @method     ChildHistory findOneByY(int $y) Return the first ChildHistory filtered by the y column *
+ * @method     ChildHistory findOneByY(int $y) Return the first ChildHistory filtered by the y column
+ * @method     ChildHistory findOneByHit(int $hit) Return the first ChildHistory filtered by the hit column *
 
  * @method     ChildHistory requirePk($key, ConnectionInterface $con = null) Return the ChildHistory by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildHistory requireOne(ConnectionInterface $con = null) Return the first ChildHistory matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -69,6 +72,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHistory requireOneByPlayer(string $player) Return the first ChildHistory filtered by the player column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildHistory requireOneByX(int $x) Return the first ChildHistory filtered by the x column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildHistory requireOneByY(int $y) Return the first ChildHistory filtered by the y column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildHistory requireOneByHit(int $hit) Return the first ChildHistory filtered by the hit column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildHistory[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildHistory objects based on current ModelCriteria
  * @method     ChildHistory[]|ObjectCollection findById(int $id) Return ChildHistory objects filtered by the id column
@@ -76,6 +80,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHistory[]|ObjectCollection findByPlayer(string $player) Return ChildHistory objects filtered by the player column
  * @method     ChildHistory[]|ObjectCollection findByX(int $x) Return ChildHistory objects filtered by the x column
  * @method     ChildHistory[]|ObjectCollection findByY(int $y) Return ChildHistory objects filtered by the y column
+ * @method     ChildHistory[]|ObjectCollection findByHit(int $hit) Return ChildHistory objects filtered by the hit column
  * @method     ChildHistory[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -174,7 +179,7 @@ abstract class HistoryQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, id_game, player, x, y FROM history WHERE id = :p0';
+        $sql = 'SELECT id, id_game, player, x, y, hit FROM history WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -453,6 +458,47 @@ abstract class HistoryQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(HistoryTableMap::COL_Y, $y, $comparison);
+    }
+
+    /**
+     * Filter the query on the hit column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByHit(1234); // WHERE hit = 1234
+     * $query->filterByHit(array(12, 34)); // WHERE hit IN (12, 34)
+     * $query->filterByHit(array('min' => 12)); // WHERE hit > 12
+     * </code>
+     *
+     * @param     mixed $hit The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildHistoryQuery The current query, for fluid interface
+     */
+    public function filterByHit($hit = null, $comparison = null)
+    {
+        if (is_array($hit)) {
+            $useMinMax = false;
+            if (isset($hit['min'])) {
+                $this->addUsingAlias(HistoryTableMap::COL_HIT, $hit['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($hit['max'])) {
+                $this->addUsingAlias(HistoryTableMap::COL_HIT, $hit['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(HistoryTableMap::COL_HIT, $hit, $comparison);
     }
 
     /**

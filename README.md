@@ -34,6 +34,36 @@ We're going to play Battleship!
 - Y (mandatory): Col coordinate
 - Authentication Header token
 
+6. /api/fight-back/{player}
+- Player (mandatory): Player1 search inside Player 1 Fleet
+- Authentication Header token
+
+## Difficulty
+1. Be gentle
+- 5 minutes
+- speed x 1 (1 second)
+- no intelligence
+
+2. Too young to die
+- 4 minutes
+- speed x 1 (1 second)
+- horizontal scraping on enemy hit (memory on previous hit)
+
+3. Warning zone
+- 3 minutes
+- speed x 2 (0.5 second)
+- horizontal scraping on enemy hit (memory on previous hit)
+
+4. Danger zone
+- 2 minutes
+- speed x 3 (0.33 second)
+- horizontal and vertical scraping on enemy hit (memory on previous hit)
+
+4. Ultra nightmare
+- 1 minutes
+- speed x 4 (0.25 second)
+- horizontal and vertical scraping on enemy hit (memory on previous hit)
+
 ## Test
 ./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/BoardTest.php
 

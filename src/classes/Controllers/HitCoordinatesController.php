@@ -55,26 +55,7 @@ if(!class_exists('HitCoordinatesController'))
                 return $response->withJson(array('error' => 'Invalid token'), 401);
             }
             else {
-                
-                // Observer
-                //$observer = new MonologHistoryObserver();
-                
-                // Save on history
-                $history = new History();
-                $history->setIdGame($gameQuery->getId());
-                $history->setPlayer($player);
-                $history->setX($x);
-                $history->setY($y);
-                //$history->attach($observer);
-                
-                try{
-                    $history->save();
-                }
-                catch(\Exception $ex) {
-                    // Save on logs
-                    //$history->notify();
-                }
-                
+
                 // Check if there is a ship at those coordinates, in the player board
                 $hit = false;
                 $hullHit = 0;
@@ -127,6 +108,26 @@ if(!class_exists('HitCoordinatesController'))
                         $ship->resetTmpCoordinates();
                     }
     
+                    // Observer
+                    //$observer = new MonologHistoryObserver();
+                    
+                    // Save on history
+                    $history = new History();
+                    $history->setIdGame($gameQuery->getId());
+                    $history->setPlayer($player);
+                    $history->setX($x);
+                    $history->setY($y);
+                    $history->setHit($hit);
+                    //$history->attach($observer);
+                    
+                    try{
+                        $history->save();
+                    }
+                    catch(\Exception $ex) {
+                        // Save on logs
+                        //$history->notify();
+                    }
+                    
                     // Return the hit result
                     return $response->withJson(array('results' => array(
                         'x' => intval($x),

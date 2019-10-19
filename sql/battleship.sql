@@ -53,6 +53,7 @@ CREATE TABLE `history`
     `player` VARCHAR(250) DEFAULT '' NOT NULL,
     `x` INTEGER NOT NULL,
     `y` INTEGER NOT NULL,
+    `hit` INTEGER DEFAULT 0 NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id` (`id`),
     UNIQUE INDEX `unique_index_history` (`id_game`, `player`, `x`, `y`),

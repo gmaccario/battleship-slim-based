@@ -39,6 +39,7 @@
     <column name="player" phpName="Player" type="VARCHAR" size="250" required="true" defaultValue=""/>
     <column name="x" phpName="X" type="INTEGER" required="true"/>
     <column name="y" phpName="Y" type="INTEGER" required="true"/>
+    <column name="hit" phpName="Hit" type="INTEGER" required="true" defaultValue="0"/>
     <foreign-key foreignTable="game" name="history_ibfk_1" onDelete="CASCADE" onUpdate="CASCADE">
       <reference local="id_game" foreign="id"/>
     </foreign-key>

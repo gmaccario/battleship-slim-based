@@ -54,7 +54,7 @@ if(!class_exists('FightBackController'))
                 return $response->withJson(array('error' => 'Invalid token'), 401);
             }
             else {
-                
+
                 // Get history per player
                 $historyQuery = HistoryQuery::create()
                 ->filterByIdGame($gameQuery->getId())
@@ -87,25 +87,6 @@ if(!class_exists('FightBackController'))
                 
                 list($x, $y) = $randomCoordinates;
                 
-                // Observer
-                //$observer = new MonologHistoryObserver();
-                
-                // Save on history
-                $history = new History();
-                $history->setIdGame($gameQuery->getId());
-                $history->setPlayer($player);
-                $history->setX($x);
-                $history->setY($y);
-                //$history->attach($observer);
-                
-                try{
-                    $history->save();
-                }
-                catch(\Exception $ex) {
-                    // Save on logs
-                    //$history->notify();
-                }
-
                 // Check if there is a ship at those coordinates, in the player board
                 $hit = false;
                 $hullHit = 0;
@@ -158,6 +139,27 @@ if(!class_exists('FightBackController'))
                         
                         $ship->resetTmpCoordinates();
                     }
+                    
+                    // Observer
+                    //$observer = new MonologHistoryObserver();
+                    
+                    // Save on history
+                    $history = new History();
+                    $history->setIdGame($gameQuery->getId());
+                    $history->setPlayer($player);
+                    $history->setX($x);
+                    $history->setY($y);
+                    $history->setHit($hit);
+                    //$history->attach($observer);
+                    
+                    try{
+                        $history->save();
+                    }
+                    catch(\Exception $ex) {
+                        // Save on logs
+                        //$history->notify();
+                    }
+                    
                     
                     // Return the hit result
                     return $response->withJson(array('results' => array(
