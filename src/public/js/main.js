@@ -35,8 +35,6 @@ const Cell = Vue.component('cell',{
 
 		hitCoordinates(row, col) {
 			
-			console.log("CLICK ON GAME OVER", this.gameOver);
-			
 			if(!this.gameOver)
 			{
 				// Prevent click on already attacked cells and on player 1 board
@@ -61,10 +59,6 @@ const Cell = Vue.component('cell',{
 							
 							this.$root.$emit('hitShip', this.player, response.data.results.shipId, response.data.results.hull);
 						}
-	
-						console.log("CURREENT PLAYA:", this.currentPlayer);
-						
-						//this.currentPlayer == 1;
 						
 						// Fight Back
 						EventBus.$emit('fightBack', 1);
@@ -94,14 +88,10 @@ const Cell = Vue.component('cell',{
 					
 					this.$root.$emit('hitShip', this.player, shipId, hull);
 				}
-				
-				console.log('HitCoordinatesOnFightBack method 000:', results);
 			}
-			
-			// console.log('HitCoordinatesOnFightBack method 111:', results);
 		},
 	},
-  	template:`<div @click="hitCoordinates((row - 1), (col - 1));">
+  	template:`<div class="cell-wrapper" @click="hitCoordinates((row - 1), (col - 1));">
         		<i v-if="!attacked && !hit && !gameOver" class="fas fa-align-justify animated rubberBand"></i>
         		
         		<i v-if="attacked && hit && !gameOver" class="fas fa-bomb animated bounce"></i>
@@ -177,7 +167,7 @@ const Countdown = Vue.component('countdown',{
 		},
 	},
   	template:`<div class="countdown">
-  		<div class="countdown-block">
+  		<div class="countdown-block animated shake slow">
 	        <p class="digit"><i class="fas fa-hourglass-half"></i></p>
 	        <p class="text">&nbsp;</p>
 	    </div>
@@ -201,6 +191,7 @@ const Hull = Vue.component('hull',{
 	props: {
 		id: Number,
 		ship: Object,
+		index: Number,
 	},
 	data(){
 		return {
@@ -229,7 +220,9 @@ const Hull = Vue.component('hull',{
 	methods: {
 		
 	},
-  	template:`<div class="ship-hull" :class="{'hit': hit, 'animated bounce': hit}" :title="ship.type"></div>`
+  	template:`<div class="ship-hull" :class="{'hit': hit, 'animated bounce': hit}" :title="ship.type">
+  		
+  	</div>`
 });
 
 // Ship Component
@@ -270,9 +263,7 @@ const Ship = Vue.component('ship',{
 		}
 	},
   	template:`<div class="ship" :class="'ship-' + ship.id + ' type-' + ship.type.split(' ').join('-').toLowerCase()">
-  				<div v-for="hullId in ship.len">
-  					<hull :ship="ship" :id="hullId - 1"></hull>
-  				</div>
+  				<hull :ship="ship" :id="hullId - 1" :index="index" v-for="(hullId, index) in ship.len" :key="index" :class="'ship-' + ship.type.split(' ').join('-').toLowerCase() + '-hull-' + index"></hull>
   			</diV>`
 });
 
@@ -285,6 +276,7 @@ const Fleet = Vue.component('fleet',{
 		player: String,
 		token: String,
 		gameStarted: Boolean,
+		title: String,
 	},
 	data(){
 		return {
@@ -304,11 +296,9 @@ const Fleet = Vue.component('fleet',{
 				// Decrease Intact Hulls
 				this.shipsHullsTotal[player] = this.shipsHullsTotal[player] - 1;
 				
-				console.log("DECREASED", 'player' + player, this.shipsHullsTotal[player]);
-				
 				if(this.shipsHullsTotal[player].toString() == '0')
 				{
-					console.log("GAME OVER");
+					console.log("GAME OVER player win!");
 					
 					EventBus.$emit('gameOver', player);
 				}	
@@ -348,12 +338,11 @@ const Fleet = Vue.component('fleet',{
 		},
 	},
   	template:`<div class="fleet" :class="'player' + player">
-  			<p>Fleet {{ player }}</p>
-  			
-  			<div v-for="ship in ships">
-	  			<ship :ship="ship"></ship>
+  			<div class="title" role="alert" >
+	  			<p class="font-weight-bold">{{ title }}</p>
 	  		</div>
-  			 
+
+	  		<ship :ship="ship" v-for="ship in ships" :key="ship.id"></ship>
   		</div>`
 });
 
@@ -366,6 +355,7 @@ const Board = Vue.component('board',{
 		player: String,
 		token: String,
 		gameOver: Boolean,
+		title: String,
 	},
 	data(){
 		return {
@@ -378,20 +368,11 @@ const Board = Vue.component('board',{
 
 		EventBus.$on('fightBack', (player) => {
 
-			console.log('SENT PLAYA', player);
-			
 			// Do the trick: Call the fightBack just once
 			if(player.toString() != '1')
 			{
 				return;
 			}
-			
-			//let reversedPlayer = ((player.toString() === '2') ? '1' : player.toString());
-			
-			//EventBus.$emit('changePlayer', reversedPlayer);
-			
-			console.log("REVERSED:", player.toString());
-			
 			
 			axios.get('/api/fight-back/player' + player, {
 				
@@ -407,14 +388,8 @@ const Board = Vue.component('board',{
 					
 					let ref = 'cell-ref-' + player + '-' + row + '-' + col;
 
-					console.log("REF", ref);
-					console.log("REF PLAYA OBJ", this.player);
-					console.log("REF PLAYA VAR", player);
-					
 					if(this.$refs[ref])
 					{
-						console.log(this.$refs[ref]);
-						
 						this.$refs[ref][0].HitCoordinatesOnFightBack(results);
 					}	
 				}
@@ -423,7 +398,6 @@ const Board = Vue.component('board',{
 	},
 	mounted() {
 		
-		// console.log('fight back mounted:', this.$refs);
 	},
 	watch: {
 
@@ -432,13 +406,17 @@ const Board = Vue.component('board',{
 
 	},
   	template:`<div class="board" :class="'player' + player">
-  		<p>Board {{ player }}</p>
+  		<div class="title" role="alert" >
+  			<p class="font-weight-bold">{{ title }}</p>
+  		</div>
   		
   		<table class="board" :class="'player' + player">
 		    <tbody>
 		        <tr v-for="row in rows" class="board-row" :class="'board-row-' + (row - 1)">
 		        
-		        	<td class="board-row-header" :class="'board-row-header-' + (row - 1)">{{ alphabet[row - 1].toUpperCase() }}</td>
+		        	<td class="board-row-header" :class="'board-row-header-' + (row - 1)">
+		        		{{ alphabet[row - 1].toUpperCase() }}
+		        	</td>
 		        	
 		        	<td v-for="col in cols" class="board-cell" :class="'board-cell-row-' + (row - 1) + ' board-cell-col-' + (col - 1)">
 	        			<cell :token="token" :player="player" :cols="cols" :col="col - 1" :row="row - 1" :game-over="gameOver" :key="'cell-ref-' + player + '-' + (row - 1) + '-' + (col - 1)" :ref="'cell-ref-' + player + '-' + (row - 1) + '-' + (col - 1)"></cell>
@@ -516,6 +494,104 @@ const Difficulty = Vue.component('difficulty',{
   	template:`<button v-on:click="chooseLevel()" type="button" class="btn" :class="cls">{{ label }}</button>`
 });
 
+// FormUsername Component
+const FormUsername = Vue.component('formusername',{
+	components: {
+		
+	},
+	props: {
+		player: String,
+		token: String,
+	},
+	data(){
+		return {
+			
+		}
+	},
+	created() {
+		
+	},
+	mounted() {
+
+	},
+	watch: {
+		
+		
+	},
+	methods: {
+		
+	},
+  	template:`<form action="/api/username" method="POST">
+				<div class="form-group">
+                    <label for="your-name">Your name</label>
+                    <input type="text" class="form-control" id="your-name" aria-describedby="yourName" placeholder="Enter your name">
+                    <small id="yourName" class="form-text text-muted">Thanks for playing with us!</small>
+                </div>
+                <div class="form-check">
+                    <input type="hidden" class="form-check-input" id="honeypot" value="">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+			</form>`
+});
+
+// ModalEndOfGame Component
+const ModalEndOfGame = Vue.component('modalendofgame',{
+	components: {
+		
+	},
+	props: {
+		won: String,
+		player: String,
+		token: String,
+	},
+	data(){
+		return {
+			
+		}
+	},
+	created() {
+		
+	},
+	mounted() {
+
+	},
+	watch: {
+		
+		
+	},
+	methods: {
+		
+		closeModal() {
+
+			EventBus.$emit('closeModalGameOver');
+		}
+	},
+  	template:`<transition name="modal">
+              <div class="modal-mask">
+                <div class="modal-wrapper">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">
+                        	<span v-if="won == '1'">You win!</span>
+                    		<span v-else>Game over</span>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true" v-on:click="closeModal">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <formusername v-if="won == '1'"></formusername>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" v-on:click="closeModal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </transition>`
+});
 
 // Main Vue Object
 const vm = new Vue({
@@ -525,6 +601,8 @@ const vm = new Vue({
         'fleet': Fleet,
         'difficulty': Difficulty,
         'countdown': Countdown,
+        'formusername': FormUsername,
+        'modalendofgame': ModalEndOfGame,
     },
     data(){
     	
@@ -535,16 +613,10 @@ const vm = new Vue({
 			gameStarted: false,
 			gameOver: false,
 			won: false,
+			showModalGameOver: false,
 		}
 	},
     created() {
-		
-		/*EventBus.$on('changePlayer', (player) => {
-
-			this.player = player;
-			
-			console.log('Playa:', this.player);
-		});*/
 		
 		EventBus.$on('setToken', (token) => {
 
@@ -581,10 +653,18 @@ const vm = new Vue({
 			// @todo Send a message to save the winner on db
 			
 			this.gameOver = true;
+			
+			this.showModalGameOver = true;
 		});
+		
+		EventBus.$on('closeModalGameOver', () => {
+			
+			this.showModalGameOver = false;
+		});
+		
 	},
 	mounted() {
-		//console.log('Playa:', this.player);
+
 	},
     methods: {
     	

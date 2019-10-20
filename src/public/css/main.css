@@ -1,44 +1,113 @@
-a,h1,h2,h3,h4,h5,h6,p,span{font-family:Roboto,sans-serif;color:#04595e}table{border:1px solid silver;border-collapse:collapse}table tr td{border:1px solid silver;padding:.5em}table span{font-size:.9em}footer{border-top:1px solid #04595e;margin-top:1em}footer span{float:right;font-size:.8em}.water{background-color:#0ff}.bomb{background-color:red}.btn-primary span{color:#fff}
+a,h1,h2,h3,h4,h5,h6,p,span{font-family:Roboto,sans-serif;color:#04595e;}
+
+.btn-primary span{color:#ffffff;}
+
+#app{ min-height: 350px; }
+
+.intro{margin-top: 1em; border-top: 1px solid #c0c0c0;}
+
+table{border:1px solid silver;border-collapse:collapse}
+table tr td{border:1px solid silver;padding:.5em}
+table span{font-size:.9em}
+
+.table-content { width: 20px; }
+
+.water{background-color:#0ff}
+.bomb{background-color:red}
+
+.game-over{display:none;border:1px solid #04595e;position:absolute;top:50%;left:50%;width:400px;height:200px;margin-left:-200px;margin-top:-200px;text-align:center;padding:3em;background-color:red;z-index:999}
+.game-over.player1{background-color:green}.game-over a,.game-over span{color:#ffffff}.game-over .message{display:none}
+
+
+.board{float: left;width: 58%;margin: 1%;margin-top: 0;}
+.board .title{margin-bottom: 1em;}
+.board.player1 .title p{color: #004085;}
+.board.player2 .title p{color: #1b1e21;}
+.board.player1 .title{border-bottom:5px solid #d4Edda;}
+.board.player2 .title{border-bottom:5px solid #e2e3e5;}
+.board.player2 .fa-align-justify:hover{ cursor: pointer; }
 
 
 
-#app{
-	min-height: 350px;	
+.fleet-solutions{clear:both;display:block}
+
+.fleet .title{margin-bottom: 1em;}
+.fleet.player1 .title p{color: #004085;}
+.fleet.player2 .title p{color: #1b1e21;}
+.fleet.player1 .title{border-bottom:5px solid #d4Edda;}
+.fleet.player2 .title{border-bottom:5px solid #e2e3e5;}
+
+.fleet{float: right;width: 36%;margin: 2%;margin-top: 0;}
+.fleet .ship{height:25px;margin-bottom:.3em;width:100%;/*float:left;*/}
+.fleet .ship .ship-hull{height:25px;width:25px;float:left;/*border:1px solid #04595e;background-color:silver*/}
+.fleet .ship .ship-hull.hit{opacity: 0.3;filter: alpha(opacity=30); /* IE8 and lower */zoom: 1; /* Triggers "hasLayout" in IE 7 and lower */;}
+
+.fleet .ship-hull.ship-battleship-hull-0{ background-image: url('/src/public/images/hulls-25x25/Battleship-hull-0.png'); }
+.fleet .ship-hull.ship-battleship-hull-1{ background-image: url('/src/public/images/hulls-25x25/Battleship-hull-1.png'); }
+.fleet .ship-hull.ship-battleship-hull-2{ background-image: url('/src/public/images/hulls-25x25/Battleship-hull-2.png'); }
+.fleet .ship-hull.ship-battleship-hull-3{ background-image: url('/src/public/images/hulls-25x25/Battleship-hull-3.png'); }
+
+.fleet .ship-hull.ship-aircraft-carrier-hull-0{ background-image: url('/src/public/images/hulls-25x25/AircraftCarrier-hull-0.png'); }
+.fleet .ship-hull.ship-aircraft-carrier-hull-1{ background-image: url('/src/public/images/hulls-25x25/AircraftCarrier-hull-1.png'); }
+.fleet .ship-hull.ship-aircraft-carrier-hull-2{ background-image: url('/src/public/images/hulls-25x25/AircraftCarrier-hull-2.png'); }
+
+.fleet .ship-hull.ship-destroyer-hull-0{ background-image: url('/src/public/images/hulls-25x25/Destroyer-hull-0.png'); }
+.fleet .ship-hull.ship-destroyer-hull-1{ background-image: url('/src/public/images/hulls-25x25/Destroyer-hull-1.png'); }
+
+.fleet .ship-hull.ship-small-ship-hull-0{ background-image: url('/src/public/images/hulls-25x25/SmallShip-hull-0.png'); }
+
+
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .5);
+  display: table;
+  transition: opacity .3s ease;
+}
+
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
 }
 
 
-.fleet .ship{height:25px;margin-bottom:.3em;width:30%;float:left}
-.fleet .ship .ship-hull{height:20px;width:20px;float:left;border:1px solid #04595e;background-color:silver}
-.fleet .ship .ship-hull.hit{background-color:red}
+
+.level-stage{
+	position: absolute;
+    top: 0;
+    left: 35%;
+}
 
 
-.fleet-solutions{clear:both;display:block}.game-over{display:none;border:1px solid #04595e;position:absolute;top:50%;left:50%;width:400px;height:200px;margin-left:-200px;margin-top:-200px;text-align:center;padding:3em;background-color:red;z-index:999}.game-over.player1{background-color:green}.game-over a,.game-over span{color:#ffffff}.game-over .message{display:none}.table-content { width: 20px; }.board.player2 .fa-align-justify:hover{ cursor: pointer; }
-
-
-
-
-
-
-.countdown-block {
+.countdown{
+	top: 0;
+    position: fixed;
+    right: 0;
+    z-index: 999;
+}
+.countdown .countdown-block {
+    display: block;
     float: left;
-    flex-direction: column;
-    margin: 20px;
+    margin: 0.3em;
 }
 
-.countdown-block .text {
+.countdown .countdown-block .text {
     /*color: #1abc9c;*/
     text-align: center;
 }
 
-.countdown-block .digit {
+.countdown .countdown-block .digit {
     text-align: center;
 }
 
 
 
 
-
-
+footer{border-top:1px solid #04595e;margin-top:1em}footer span{float:right;font-size:.8em}
 
 section {
     padding: 60px 0;

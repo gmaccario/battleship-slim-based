@@ -30,6 +30,8 @@
                 </div>
             </div>
             
+            <hr />
+            
             <div id="app" class="container-fluid">
             	
                 <div class="row" v-if="!gameStarted">
@@ -44,11 +46,10 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="row" v-if="!gameStarted">
                 	<div class="col">
                 		<div class="intro">
-                			
                 			<h3>Setup</h3>
                 			<p>Each player's fleet contains 5 different ships:</p>
 
@@ -71,64 +72,59 @@
                 	</div>
                 </div>
                 
-                <div class="row" v-if="gameOver">
-                	<div class="alert alert-success" role="alert" v-if="won == 1">
-						<p>You win!</p>
-                    </div>
-                    <div class="alert alert-danger" role="alert" v-else>
-						<p>Game over</p>
-                    </div>
+                <div class="row">
+                	<modalendofgame v-if="gameOver && showModalGameOver" :won=won :token="token"></modalendofgame>
                 </div>
                 
-                <div class="row" v-if="difficulty && gameStarted && !gameOver">
+                <div class="row level-stage" v-if="difficulty && gameStarted && !gameOver">
                 	
                 	<div v-if="difficultyLevel == '1'" >
-                        <div class="alert alert-primary float-left" role="alert">
+                        <div class="alert alert-primary" role="alert">
                         	<span>{{ difficulty.charAt(0).toUpperCase() + difficulty.split('-').join(' ').toLowerCase().slice(1) }}</span>
                         </div>
-                        <countdown class="float-right" :timer=5 :speed=1></countdown>
+                        <countdown :timer=5 :speed=1></countdown>
                     </div>
                     
                     <div v-if="difficultyLevel == '2'" >
-    					<div class="alert alert-secondary float-left" v-if="difficulty == 'too-young-to-die'" role="alert">
+    					<div class="alert alert-secondary" v-if="difficulty == 'too-young-to-die'" role="alert">
                         	<span>{{ difficulty.charAt(0).toUpperCase() + difficulty.split('-').join(' ').toLowerCase().slice(1) }}</span>
                         </div>
-                        <countdown class="float-right" :timer=4 :speed=1></countdown>
+                        <countdown :timer=4 :speed=1></countdown>
                     </div>
                     
                     <div v-if="difficultyLevel == '3'" >
-                        <div class="alert alert-warning float-left" v-if="difficulty == 'warning-zone'" role="alert">
+                        <div class="alert alert-warning" v-if="difficulty == 'warning-zone'" role="alert">
                         	<span>{{ difficulty.charAt(0).toUpperCase() + difficulty.split('-').join(' ').toLowerCase().slice(1) }}</span>
                         </div>
-                        <countdown class="float-right" :timer=3 :speed=2></countdown>
+                        <countdown :timer=3 :speed=2></countdown>
                     </div>
                     
                     <div v-if="difficultyLevel == '4'" >
-                        <div class="alert alert-danger float-left" v-if="difficulty == 'danger-zone'" role="alert">
+                        <div class="alert alert-danger" v-if="difficulty == 'danger-zone'" role="alert">
                         	<span>{{ difficulty.charAt(0).toUpperCase() + difficulty.split('-').join(' ').toLowerCase().slice(1) }}</span>
                         </div>
-                        <countdown class="float-right" :timer=2 :speed=3></countdown>
+                        <countdown :timer=2 :speed=3></countdown>
                     </div>
                     
                     <div v-if="difficultyLevel == '5'" >
-                        <div class="alert alert-dark float-left" v-if="difficulty == 'ultre-nightmare'" role="alert">
+                        <div class="alert alert-dark" v-if="difficulty == 'ultre-nightmare'" role="alert">
                         	<span>{{ difficulty.charAt(0).toUpperCase() + difficulty.split('-').join(' ').toLowerCase().slice(1) }}</span>
                         </div>
-                        <countdown class="float-right" :timer=1 :speed=4></countdown>
+                        <countdown :timer=1 :speed=4></countdown>
                     </div>
                 </div>
                 
                 <div class="row" v-if="token">
 					<div class="col">
 						<div id="player1">
-                			<board player=1 :token="token" :game-over="gameOver"></board>
-                			<fleet player=1 :token="token" :game-started="gameStarted"></fleet>
+                			<board title="Your board" player=1 :token="token" :game-over="gameOver"></board>
+                			<fleet title="Your fleet" player=1 :token="token" :game-started="gameStarted"></fleet>
                 		</div>
                 	</div>
 					<div class="col">
                 		<div id="player2">
-                			<board player=2 :token="token" :game-over="gameOver"></board>
-                			<fleet player=2 :token="token" :game-started="gameStarted"></fleet>
+                			<board title="Enemy's board (click here!)" player=2 :token="token" :game-over="gameOver"></board>
+                			<fleet title="Enemy's fleet" player=2 :token="token" :game-started="gameStarted"></fleet>
                 		</div>
                     </div>
                 </div>
