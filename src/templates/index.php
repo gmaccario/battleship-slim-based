@@ -47,29 +47,32 @@
                     </div>
                 </div>
 
-                <div class="row" v-if="!gameStarted">
-                	<div class="col">
-                		<div class="intro">
-                			<h3>Setup</h3>
-                			<p>Each player's fleet contains 5 different ships:</p>
-
-							<ul>
-                                <li>Battleship (4 holes)</li>
-                                <li>Aircraft Carrier (3 holes)</li>
-                                <li>Destroyer (2 holes)</li>
-                                <li>Small Ship (1 holes)</li>
-                            </ul>
-                            
-                            <h3>Game Play</h3>
-
-                            <p>You and your opponent will alternate turns, calling out one shot per turn to try to hit each other's ships.
-                            On your turn, pick a target hole on Board 2 (enemy's board) and click out its location. Hit or miss?</p>
-							
-							<h3>End of the Game</h3>
-							<p>If you are the first player to sink your opponent's entire fleet of 5 ships, you win the game.</p>
-
-                		</div>
-                	</div>
+                <div class="row intro" v-if="!gameStarted">
+        			<div class="col-sm">
+                      <h3>Setup</h3>
+                      
+                      <p>Each player's fleet contains 5 different ships:</p>
+    
+    					<ul>
+                            <li>Battleship (4 holes)</li>
+                            <li>Aircraft Carrier (3 holes)</li>
+                            <li>Destroyer (2 holes)</li>
+                            <li>Small Ship (1 holes)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-sm">
+                      <h3>Game Play</h3>
+                      
+                      <p>You and your opponent will alternate turns, calling out one shot per turn to try to hit each other's ships.
+                    	On your turn, pick a target hole on Board 2 (enemy's board) and click out its location. Hit or miss?</p>
+                    </div>
+                    
+                    <div class="col-sm">
+                      <h3>End of the Game</h3>
+                      
+    					<p>If you are the first player to sink your opponent's entire fleet of 5 ships, you win the game.</p>
+                    </div>
                 </div>
                 
                 <div class="row">

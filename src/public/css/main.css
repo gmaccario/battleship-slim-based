@@ -7,38 +7,55 @@ a,h1,h2,h3,h4,h5,h6,p,span{font-family:Roboto,sans-serif;color:#04595e;}
 .intro{margin-top: 1em; border-top: 1px solid #c0c0c0;}
 
 table{border:1px solid silver;border-collapse:collapse}
-table tr td{border:1px solid silver;padding:.5em}
+
+
+table tr td{border:1px solid silver;}
+/*table tr td .cell-wrapper-icon{}
+table tr td.board-row-header{padding:.5em}
+table tr.board-row-footer td{padding:.5em}
+*/
+
+table tr td .cell-icon{
+	background-color: #DCDCDC;
+    padding: .5em;
+}
+table tr td .cell-icon.water{background-color: #87CEFA;}
+table tr td .cell-icon.bomb{background-color: #FF4500	;}
+table tr td .cell-icon.gameover{background-color: #F5F5F5;}
+
+table tr td.board-row-header{padding:.6em}
+table tr.board-row-footer td{padding:.6em}
+
 table span{font-size:.9em}
 
 .table-content { width: 20px; }
-
-.water{background-color:#0ff}
-.bomb{background-color:red}
 
 .game-over{display:none;border:1px solid #04595e;position:absolute;top:50%;left:50%;width:400px;height:200px;margin-left:-200px;margin-top:-200px;text-align:center;padding:3em;background-color:red;z-index:999}
 .game-over.player1{background-color:green}.game-over a,.game-over span{color:#ffffff}.game-over .message{display:none}
 
 
-.board{float: left;width: 58%;margin: 1%;margin-top: 0;}
+.board{float: left;width: 65%;margin: 1%;margin-top: 0;}
 .board .title{margin-bottom: 1em;}
-.board.player1 .title p{color: #004085;}
-.board.player2 .title p{color: #1b1e21;}
-.board.player1 .title{border-bottom:5px solid #d4Edda;}
-.board.player2 .title{border-bottom:5px solid #e2e3e5;}
+.board.player1 .title p{color: #228B22;}
+.board.player2 .title p{color: #8B0000;}
+.board.player1 .title{border-bottom:5px solid #7FFF00;}
+.board.player2 .title{border-bottom:5px solid #FF0000;}
 .board.player2 .fa-align-justify:hover{ cursor: pointer; }
 
 
 
 .fleet-solutions{clear:both;display:block}
 
-.fleet .title{margin-bottom: 1em;}
-.fleet.player1 .title p{color: #004085;}
-.fleet.player2 .title p{color: #1b1e21;}
-.fleet.player1 .title{border-bottom:5px solid #d4Edda;}
-.fleet.player2 .title{border-bottom:5px solid #e2e3e5;}
+.fleet{float: right;width: 25%;margin: 2%;margin-top: 0;}
 
-.fleet{float: right;width: 36%;margin: 2%;margin-top: 0;}
-.fleet .ship{height:25px;margin-bottom:.3em;width:100%;/*float:left;*/}
+.fleet .title{margin-bottom: 1em;}
+
+.fleet.player1 .title p{color: #228B22;}
+.fleet.player2 .title p{color: #8B0000;}
+.fleet.player1 .title{border-bottom:5px solid #7FFF00;}
+.fleet.player2 .title{border-bottom:5px solid #FF0000;}
+
+.fleet .ship{height:25px;margin-bottom:.3em;width:100%;}
 .fleet .ship .ship-hull{height:25px;width:25px;float:left;/*border:1px solid #04595e;background-color:silver*/}
 .fleet .ship .ship-hull.hit{opacity: 0.3;filter: alpha(opacity=30); /* IE8 and lower */zoom: 1; /* Triggers "hasLayout" in IE 7 and lower */;}
 
@@ -76,6 +93,8 @@ table span{font-size:.9em}
 
 
 
+
+
 .level-stage{
 	position: absolute;
     top: 0;
@@ -83,26 +102,90 @@ table span{font-size:.9em}
 }
 
 
+
+
+
 .countdown{
 	top: 0;
     position: fixed;
     right: 0;
     z-index: 999;
+    background-color: #ffffff;
 }
+
 .countdown .countdown-block {
     display: block;
     float: left;
     margin: 0.3em;
+    border: 1px solid #ffffff;
+    background-color: #000000;
+    padding: 0.8em;
 }
 
 .countdown .countdown-block .text {
-    /*color: #1abc9c;*/
+    color: #ffffff;
     text-align: center;
 }
 
 .countdown .countdown-block .digit {
+	color: #ffffff;
     text-align: center;
 }
+
+.countdown .countdown-block.bck-white {
+	background-color: #ffffff;
+}
+.countdown .countdown-block.bck-white .text {
+	color: #000000;
+}
+.countdown .countdown-block.bck-white .digit {
+	color: #000000;
+}
+
+
+
+
+
+.ship-hull[data-title]:hover {
+  /*outline: red dotted 1px;*/ /*optional styling*/
+  /*font-size: 30px;*/ /*optional styling*/
+  
+  position: relative;
+  cursor: help;
+  z-index: 999;
+}
+
+.ship-hull[data-title]:hover::before {
+  content: attr(data-title);
+  position: absolute;
+  bottom: -30px;
+  display: inline-block;
+  padding: 3px 6px;
+  border-radius: 2px;
+  background: #000;
+  color: #fff;
+  /*font-size: 12px;
+  font-family: sans-serif;*/
+  white-space: nowrap;
+}
+.ship-hull[data-title]:hover::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 8px;
+  display: inline-block;
+  color: #fff;
+  border: 8px solid transparent;	
+  border-bottom: 8px solid #000;
+}
+
+
+
+
+
+
+
+
 
 
 

@@ -91,13 +91,23 @@ const Cell = Vue.component('cell',{
 			}
 		},
 	},
-  	template:`<div class="cell-wrapper" @click="hitCoordinates((row - 1), (col - 1));">
-        		<i v-if="!attacked && !hit && !gameOver" class="fas fa-align-justify animated rubberBand"></i>
+  	template:`<div class="cell-wrapper-icon" @click="hitCoordinates((row - 1), (col - 1));">
+  				
+  				<div class="cell-icon not-clicked-yet" v-if="!attacked && !hit && !gameOver">
+        			<i class="fas fa-align-justify animated rubberBand"></i>
+        		</div>
         		
-        		<i v-if="attacked && hit && !gameOver" class="fas fa-bomb animated bounce"></i>
+        		<div class="cell-icon bomb" v-if="attacked && hit && !gameOver">
+        			<i class="fas fa-bomb animated bounce"></i>
+        		</div>
         		
-        		<i v-if="attacked && !hit && !gameOver" class="fas fa-water animated wobble"></i>
-        		<i v-if="gameOver" class="fas fa-ban animated zoomIn"></i>
+  				<div class="cell-icon water" v-if="attacked && !hit && !gameOver">
+        			<i class="fas fa-water animated wobble"></i>
+        		</div>
+        		
+        		<div class="cell-icon gameover" v-if="gameOver">
+        			<i  class="fas fa-ban animated zoomIn"></i>
+        		</div>
         	</div>`
 });
 
@@ -167,8 +177,8 @@ const Countdown = Vue.component('countdown',{
 		},
 	},
   	template:`<div class="countdown">
-  		<div class="countdown-block animated shake slow">
-	        <p class="digit"><i class="fas fa-hourglass-half"></i></p>
+  		<div class="countdown-block animated shake slow bck-white">
+	        <p class="digit"><i class="fas fa-hourglass-half fa-2x"></i></p>
 	        <p class="text">&nbsp;</p>
 	    </div>
 	    <div class="countdown-block" v-if="minutes > 0">
@@ -220,7 +230,7 @@ const Hull = Vue.component('hull',{
 	methods: {
 		
 	},
-  	template:`<div class="ship-hull" :class="{'hit': hit, 'animated bounce': hit}" :title="ship.type">
+  	template:`<div class="ship-hull" :class="{'hit': hit, 'animated bounce': hit}" :data-title="ship.type">
   		
   	</div>`
 });
@@ -407,7 +417,7 @@ const Board = Vue.component('board',{
 	},
   	template:`<div class="board" :class="'player' + player">
   		<div class="title" role="alert" >
-  			<p class="font-weight-bold">{{ title }}</p>
+  			<p class="font-weight-bold animated flash slower">{{ title }}</p>
   		</div>
   		
   		<table class="board" :class="'player' + player">
@@ -415,7 +425,9 @@ const Board = Vue.component('board',{
 		        <tr v-for="row in rows" class="board-row" :class="'board-row-' + (row - 1)">
 		        
 		        	<td class="board-row-header" :class="'board-row-header-' + (row - 1)">
-		        		{{ alphabet[row - 1].toUpperCase() }}
+		        		<!-- {{ alphabet[row - 1].toUpperCase() }} -->
+		        		
+		        		<i class="far fa-play-circle"></i>
 		        	</td>
 		        	
 		        	<td v-for="col in cols" class="board-cell" :class="'board-cell-row-' + (row - 1) + ' board-cell-col-' + (col - 1)">
@@ -427,7 +439,9 @@ const Board = Vue.component('board',{
 		    	<tr class="board-row-footer">
 		        	<td class="board-empty"><span>&nbsp;</span></td>
   					<td v-for="col in cols" class="board-col" :class="'board-col' + (col - 1)">
-  						{{ col }}
+  						<!-- {{ col }} -->
+  						
+  						<i class="fas fa-eject"></i>
   					</td>
 		        </tr>
 		    </tfoot>
@@ -491,7 +505,9 @@ const Difficulty = Vue.component('difficulty',{
   		  	document.cookie = `token=${this.token}; max-age=432000;path=/`;
     	},
 	},
-  	template:`<button v-on:click="chooseLevel()" type="button" class="btn" :class="cls">{{ label }}</button>`
+  	template:`<button v-on:click="chooseLevel()" type="button" class="btn" :class="cls">
+  		{{ label.split('-').join(' ').toLowerCase() }}
+  	</button>`
 });
 
 // FormUsername Component
@@ -515,16 +531,31 @@ const FormUsername = Vue.component('formusername',{
 
 	},
 	watch: {
-		
-		
+
 	},
 	methods: {
 		
+		sendUsername() {
+			
+			let username = this.$refs.your_name.value;
+			
+			axios.post('/api/username', {
+				username: username,
+				player: player,
+				token: token,
+				
+			    headers: { Authorization: `${this.token}` }
+			  })
+			  .then(function (response) {
+				  
+				  console.log("USERNAME + RESPONSE", username, response);
+			  });
+		}
 	},
-  	template:`<form action="/api/username" method="POST">
+  	template:`<form action="/" method="POST" v-on:submit.prevent="sendUsername">
 				<div class="form-group">
                     <label for="your-name">Your name</label>
-                    <input type="text" class="form-control" id="your-name" aria-describedby="yourName" placeholder="Enter your name">
+                    <input type="text" class="form-control" id="your-name" aria-describedby="yourName" placeholder="Enter your name" ref="your_name">
                     <small id="yourName" class="form-text text-muted">Thanks for playing with us!</small>
                 </div>
                 <div class="form-check">
@@ -581,7 +612,8 @@ const ModalEndOfGame = Vue.component('modalendofgame',{
                         </button>
                       </div>
                       <div class="modal-body">
-                        <formusername v-if="won == '1'"></formusername>
+                        <formusername v-if="won == '1'" :player="player" :token="token"></formusername>
+                        <span v-else>Time is over, try again!</span>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" v-on:click="closeModal">Close</button>
