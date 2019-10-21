@@ -5,6 +5,9 @@ a,h1,h2,h3,h4,h5,h6,p,span{font-family:Roboto,sans-serif;color:#04595e;}
 #app{ min-height: 350px; }
 
 .intro{margin-top: 1em; border-top: 1px solid #c0c0c0;}
+.intro .box{color: #04595E; margin-top: 1em; padding: 1em;}
+.intro .box .inner{border: 1px solid #04595E; min-height: 250px; padding: 1em;}
+.intro .box .inner h3{border-bottom: 1px solid #04595E;}
 
 table{border:1px solid silver;border-collapse:collapse}
 
@@ -90,6 +93,9 @@ table span{font-size:.9em}
   display: table-cell;
   vertical-align: middle;
 }
+
+
+
 
 
 
