@@ -27,7 +27,7 @@
                     			<span>Battleship</span>
                     		</a>
                     	</h1>
-                    	<h2>We’re going to play Battleship!</h2>
+                    	<!-- <h2>We’re going to play Battleship!</h2> -->
                 	</div>
                 </div>
             </div>

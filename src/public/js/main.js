@@ -435,10 +435,8 @@ const Board = Vue.component('board',{
 			
 			setTimeout(function(){
 				
-				this.intersectX = null;
-				this.intersectY = null;
-				this.currentPlayer = null;
-			}, 20);
+				this.resetVariables();
+			}, 25);
 		});
 	},
 	mounted() {
@@ -448,13 +446,18 @@ const Board = Vue.component('board',{
 
 	},
 	methods: {
-
+		
+		resetVariables(){
+			this.intersectX = null;
+			this.intersectY = null;
+			this.currentPlayer = null;
+		}
 	},
   	template:`<div class="board" :class="'player' + player">
   		<div class="title" role="alert" >
   			<p class="font-weight-bold animated flash slower">{{ title }}</p>
   		</div>
-  		
+
   		<table class="board" :class="'player' + player">
 		    <tbody>
 		        <tr v-for="row in rows" class="board-row" :class="'board-row-' + (row - 1)">
