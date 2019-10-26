@@ -38,9 +38,17 @@ const Cell = Vue.component('cell',{
 			if(!this.gameOver)
 			{
 				// Prevent click on already attacked cells and on player 1 board
+				if(!this.attacked)
+				{
+					// Animate intersection
+					EventBus.$emit('animateintersection', this.currentPlayer, row, col);
+				}
+				
+				// Prevent click on already attacked cells and on player 1 board
 				if(!this.attacked && this.currentPlayer == 2)
 				{
-					axios.get('/api/hit-coordinates/player' + this.currentPlayer + '/' + this.row + '/' + this.col, {
+					// Call API Hit Coordinates
+					axios.get('/api/hit-coordinates/player' + this.currentPlayer + '/' + row + '/' + col, {
 		    			
 		    			headers: { Authorization: `${this.token}` }
 		    		
@@ -76,6 +84,9 @@ const Cell = Vue.component('cell',{
 				let hit = results.hit;
 				let shipId = results.shipId;
 				let hull = results.hull;
+			
+				// Animate intersection
+				EventBus.$emit('animateintersection', this.currentPlayer, row, col);
 				
 				if(!hit)
 				{
@@ -102,7 +113,7 @@ const Cell = Vue.component('cell',{
         		</div>
         		
   				<div class="cell-icon water" v-if="attacked && !hit && !gameOver">
-        			<i class="fas fa-water animated wobble"></i>
+        			<i class="fas fa-water animated jello"></i>
         		</div>
         		
         		<div class="cell-icon gameover" v-if="gameOver">
@@ -371,7 +382,9 @@ const Board = Vue.component('board',{
 		return {
 			rows: 10,
 			cols: 10,
-			alphabet: [...'abcdefghij'], /*klmnopqrstuvwxyz*/
+			intersectX: null,
+			intersectY: null,
+			currentPlayer: null,
 		}
 	},
 	created() {
@@ -405,6 +418,29 @@ const Board = Vue.component('board',{
 				}
 			});
 		});
+		
+		EventBus.$on('animateintersection', (player, row, col) => {
+
+			// @todo Check why this disalignement on row and col
+			this.intersectX = row + 2;
+			this.intersectY = col + 2;
+			this.currentPlayer = player;
+			
+			if(player == 1)
+			{
+				this.intersectX = row + 1;
+				this.intersectY = col + 1;
+			}
+			
+			console.log(this.intersectX, this.intersectY, this.currentPlayer);
+			
+			setInterval(function(){
+				
+				this.intersectX = null;
+				this.intersectY = null;
+				this.currentPlayer = null;
+			}, 250);
+		});
 	},
 	mounted() {
 		
@@ -424,9 +460,8 @@ const Board = Vue.component('board',{
 		    <tbody>
 		        <tr v-for="row in rows" class="board-row" :class="'board-row-' + (row - 1)">
 		        
-		        	<td class="board-row-header" :class="'board-row-header-' + (row - 1)">
-		        		<!-- {{ alphabet[row - 1].toUpperCase() }} -->
-		        		
+		        	<!-- @todo Create a new component -->
+		        	<td class="board-row-header" :class="'board-row-header-' + (row - 1) + ((player == currentPlayer && intersectX == row) ? ' animated shake' : '')">
 		        		<i class="far fa-play-circle"></i>
 		        	</td>
 		        	
@@ -435,12 +470,12 @@ const Board = Vue.component('board',{
 	        		</td>
 		        </tr>
 		    </tbody>
+		    
+		    <!-- @todo Create a new component -->
 		    <tfoot>
 		    	<tr class="board-row-footer">
 		        	<td class="board-empty"><span>&nbsp;</span></td>
-  					<td v-for="col in cols" class="board-col" :class="'board-col' + (col - 1)">
-  						<!-- {{ col }} -->
-  						
+  					<td v-for="col in cols" class="board-col" :class="'board-col' + (col - 1) + ((player == currentPlayer && intersectY == col) ? ' animated slideInUp' : '')">
   						<i class="fas fa-eject"></i>
   					</td>
 		        </tr>
