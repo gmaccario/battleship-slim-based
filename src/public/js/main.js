@@ -385,6 +385,7 @@ const Board = Vue.component('board',{
 			intersectX: null,
 			intersectY: null,
 			currentPlayer: null,
+			showOverlay: false,
 		}
 	},
 	created() {
@@ -432,14 +433,12 @@ const Board = Vue.component('board',{
 				this.intersectY = col + 1;
 			}
 			
-			console.log(this.intersectX, this.intersectY, this.currentPlayer);
-			
-			setInterval(function(){
+			setTimeout(function(){
 				
 				this.intersectX = null;
 				this.intersectY = null;
 				this.currentPlayer = null;
-			}, 250);
+			}, 20);
 		});
 	},
 	mounted() {
